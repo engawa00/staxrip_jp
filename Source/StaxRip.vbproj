@@ -671,6 +671,9 @@
     </None>
     <None Include="Resources\background.gif1.bin" />
     <None Include="Resources\main.gif1.bin" />
+    <Content Include="Settings\Languages\ja.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
