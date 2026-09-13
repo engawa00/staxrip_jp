@@ -1,4 +1,4 @@
-﻿Imports StaxRip.UI
+Imports StaxRip.UI
 
 Partial Public Class MainForm
     Inherits FormBase
@@ -15,6 +15,13 @@ Partial Public Class MainForm
 
 #Region "General"
             ui.CreateFlowPage("General", True)
+
+            Dim langMenu = ui.AddMenu(Of String)()
+            langMenu.Text = Localization.Translate("Language (requires restart):")
+            langMenu.Help = Localization.Translate("Select application display language. Requires restarting StaxRip.")
+            langMenu.Field = NameOf(s.Language)
+            langMenu.Add("ja", "日本語 (Japanese)")
+            langMenu.Add("en", "English")
 
             Dim b = ui.AddBool
             b.Text = "Save projects automatically"

@@ -1,4 +1,4 @@
-﻿
+
 Imports System.Reflection
 Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
@@ -149,6 +149,10 @@ Public Class x265Control
 
         AddHandler Params.ValueChanged, AddressOf ParamsValueChanged
         AddHandler lv.UpdateContextMenu, AddressOf UpdateMenu
+
+        blConfigCodec.Text = Localization.Translate("Options")
+        tblOverrideName.Text = Localization.Translate("Name Override")
+        blConfigContainer.Text = Localization.Translate("Container Options")
 
         UpdateControls()
         ApplyTheme()
@@ -365,13 +369,13 @@ Public Class x265Control
     Sub UpdateControls()
         lv.Items.Clear()
         If Encoder.QualityMode Then
-            lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(Params.Quant.Value)}))
+            lv.Items.Add(New ListViewItem({Localization.Translate("Quality"), GetQualityCaption(Params.Quant.Value)}))
         End If
-        lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
-        lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
-        lv.Items.Add(New ListViewItem({"AQ-Mode", Params.AQmode.OptionText}))
-        lv.Items.Add(New ListViewItem({"DV Profile", Params.DolbyVisionProfile.OptionText}))
-        lv.Items.Add(New ListViewItem({"Range", Params.Range.OptionText}))
+        lv.Items.Add(New ListViewItem({Localization.Translate("Preset"), Params.Preset.OptionText}))
+        lv.Items.Add(New ListViewItem({Localization.Translate("Tune"), Params.Tune.OptionText}))
+        lv.Items.Add(New ListViewItem({Localization.Translate("AQ-Mode"), Params.AQmode.OptionText}))
+        lv.Items.Add(New ListViewItem({Localization.Translate("DV Profile"), Params.DolbyVisionProfile.OptionText}))
+        lv.Items.Add(New ListViewItem({Localization.Translate("Range"), Params.Range.OptionText}))
 
         tblOverrideName.State = Encoder.OverridesTargetFileName
         blCompCheck.Visible = Params.Mode.Value = x265RateMode.TwoPass Or Params.Mode.Value = x265RateMode.ThreePass

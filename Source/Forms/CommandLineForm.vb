@@ -1,4 +1,4 @@
-﻿
+
 Imports System.Collections.Concurrent
 Imports System.Threading
 Imports System.Threading.Tasks
@@ -136,7 +136,8 @@ Public Class CommandLineForm
 
         For x = 0 To Params.Items.Count - 1
             Dim param = Params.Items(x)
-            Dim parent As FlowLayoutPanelEx = SimpleUI.GetFlowPage(param.Path)
+            Dim localizedPath = String.Join(" | ", param.Path.Split({" | "}, StringSplitOptions.None).Select(Function(p) Localization.Translate(p)))
+            Dim parent As FlowLayoutPanelEx = SimpleUI.GetFlowPage(localizedPath)
             currentFlow = DirectCast(parent, SimpleUI.FlowPage)
 
             If Not flowPanels.Contains(parent) Then
@@ -185,7 +186,7 @@ Public Class CommandLineForm
             End If
 
             If param.Help <> "" Then
-                help += param.Help
+                help += Localization.Translate(param.Help)
             End If
 
             If help <> "" Then
@@ -199,7 +200,7 @@ Public Class CommandLineForm
             End If
 
             If param.Label <> "" Then
-                SimpleUI.AddLabel(parent, param.Label).MarginTop = FontHeight \ 2
+                SimpleUI.AddLabel(parent, Localization.Translate(param.Label)).MarginTop = FontHeight \ 2
             End If
 
             If TypeOf param Is LineParam Then
@@ -207,7 +208,7 @@ Public Class CommandLineForm
                 DirectCast(param, LineParam).InitParam(line)
             ElseIf TypeOf param Is BoolParam Then
                 Dim checkBox = SimpleUI.AddBool(parent)
-                checkBox.Text = param.Text
+                checkBox.Text = Localization.Translate(param.Text)
 
                 If param.HelpSwitch <> "" Then
                     Dim helpOptions = param.GetSwitches
@@ -225,7 +226,7 @@ Public Class CommandLineForm
                 Dim numBlock = SimpleUI.AddNum(parent)
 
                 If param.Text <> "" Then
-                    numBlock.Label.Text = If(param.Text.EndsWithEx(":"), param.Text, param.Text + ":")
+                    numBlock.Label.Text = Localization.Translate(If(param.Text.EndsWithEx(":"), param.Text, param.Text + ":"))
                 End If
 
                 If param.HelpSwitch <> "" Then
@@ -238,7 +239,7 @@ Public Class CommandLineForm
                 numBlock.NumEdit.Config = nParam.Config
 
                 If nParam.HintText <> "" Then
-                    SimpleUI.AddLabel(numBlock, nParam.HintText)
+                    SimpleUI.AddLabel(numBlock, Localization.Translate(nParam.HintText))
                 End If
 
                 AddHandler numBlock.Label.MouseDoubleClick, Sub() tempNumParam.Value = tempNumParam.DefaultValue
@@ -248,7 +249,7 @@ Public Class CommandLineForm
                 Dim tempOptionParam = DirectCast(param, OptionParam)
                 Dim oParam = DirectCast(param, OptionParam)
                 Dim menuBlock = SimpleUI.AddMenu(Of Integer)(parent)
-                menuBlock.Label.Text = If(param.Text.EndsWith(":"), param.Text, param.Text + ":")
+                menuBlock.Label.Text = Localization.Translate(If(param.Text.EndsWith(":"), param.Text, param.Text + ":"))
 
                 If param.HelpSwitch <> "" Then
                     Dim helpOptions = param.GetSwitches
@@ -259,7 +260,7 @@ Public Class CommandLineForm
                 End If
 
                 If oParam.HintText <> "" Then
-                    SimpleUI.AddLabel(menuBlock, oParam.HintText)
+                    SimpleUI.AddLabel(menuBlock, Localization.Translate(oParam.HintText))
                 End If
 
                 helpControl = menuBlock.Label
@@ -272,7 +273,7 @@ Public Class CommandLineForm
                 End If
 
                 For x2 = 0 To oParam.Options.Length - 1
-                    menuBlock.Button.Add(oParam.Options(x2), x2)
+                    menuBlock.Button.Add(Localization.Translate(oParam.Options(x2)), x2)
                 Next
 
                 oParam.InitParam(menuBlock.Button)
@@ -292,7 +293,7 @@ Public Class CommandLineForm
                     textBlock = SimpleUI.AddText(parent)
                 End If
 
-                textBlock.Label.Text = If(param.Text.EndsWith(":"), param.Text, param.Text + ":")
+                textBlock.Label.Text = Localization.Translate(If(param.Text.EndsWith(":"), param.Text, param.Text + ":"))
 
                 If param.HelpSwitch <> "" Then
                     Dim helpOptions = param.GetSwitches

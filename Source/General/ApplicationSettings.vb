@@ -1,4 +1,4 @@
-﻿
+
 Imports System.Reflection
 Imports StaxRip.UI
 
@@ -57,6 +57,7 @@ Public Class ApplicationSettings
     Public IconFile As String
     Public InvertCtrlKeyOnNextButton As Boolean = False
     Public InvertShiftKeyOnNextButton As Boolean = False
+    Public Language As String = "ja"
     Public LastPosition As Integer
     Public LastSourceDir As String
     Public LoadAviSynthPlugins As Boolean = True

@@ -1,5 +1,6 @@
-﻿Imports System.Drawing.Text
+Imports System.Drawing.Text
 Imports System.Globalization
+Imports System.IO
 Imports System.Runtime.InteropServices
 Imports System.Text
 
@@ -23,26 +24,35 @@ Public NotInheritable Class FontManager
 
     Public Shared Sub AddCollection(category As FontCategory)
         Dim collection As New PrivateFontCollection()
-        Dim fontFiles = Directory.GetFiles(Path.Combine(Folder.Fonts, category.ToString()), "*.ttf", SearchOption.AllDirectories)
+        Dim categoryDir = Path.Combine(Folder.Fonts, category.ToString())
 
-        For Each fontFile In fontFiles
-            collection.AddFontFile(fontFile)
-        Next
+        If Directory.Exists(categoryDir) Then
+            Dim fontFiles = Directory.GetFiles(categoryDir, "*.ttf", SearchOption.AllDirectories)
+            For Each fontFile In fontFiles
+                Try
+                    collection.AddFontFile(fontFile)
+                Catch
+                End Try
+            Next
+        End If
 
         If g.SettingsFolderExists Then
             If Folder.UserFonts.DirExists() Then
                 Dim subfolderPath = Path.Combine(Folder.UserFonts, category.ToString())
                 If subfolderPath.DirExists() Then
-                    fontFiles = Directory.GetFiles(subfolderPath, "*.ttf", SearchOption.AllDirectories)
+                    Dim fontFiles = Directory.GetFiles(subfolderPath, "*.ttf", SearchOption.AllDirectories)
                     For Each fontFile In fontFiles
-                        collection.AddFontFile(fontFile)
+                        Try
+                            collection.AddFontFile(fontFile)
+                        Catch
+                        End Try
                     Next
                 End If
             End If
         End If
 
         If collection.Families.Any() Then
-            _fontCollections.Add(category, collection)
+            _fontCollections(category) = collection
         End If
     End Sub
 
@@ -50,21 +60,40 @@ Public NotInheritable Class FontManager
         If Not _fontCollections.Any() Then Init()
 
         Dim collections = If(category = FontCategory.All, _fontCollections, _fontCollections.Where(Function(x) x.Key = category))
-        Dim fontFamilies = collections.SelectMany(Function(x) x.Value.Families)
+        Dim fontFamilies = collections.SelectMany(Function(x) x.Value.Families).ToList()
+
+        If Not fontFamilies.Any() Then
+            Try
+                fontFamilies = FontFamily.Families.ToList()
+            Catch
+            End Try
+        End If
 
         If filtered Then
             fontFamilies = fontFamilies _
                 .Where(Function(x) Not x.Name.ContainsAny({"UltraCondensed", "UltraExpanded"})) _
-                .Where(Function(x) Not x.Name.EndsWithAny({" Thin"}))
+                .Where(Function(x) Not x.Name.EndsWithAny({" Thin"})) _
+                .ToList()
         End If
 
-        Return fontFamilies.ToList()
+        Return fontFamilies
     End Function
 
     Shared Function GetFontFamily(category As FontCategory, fontName As String) As FontFamily
         If Not _fontCollections.Any() Then Init()
         Dim collections = If(category = FontCategory.All, _fontCollections, _fontCollections.Where(Function(x) x.Key = category))
-        Return collections.SelectMany(Function(s) s.Value.Families.Where(Function(x) x.Name = fontName)).FirstOrDefault(Function(x) x IsNot Nothing)
+        Dim found = collections.SelectMany(Function(s) s.Value.Families.Where(Function(x) x.Name.Equals(fontName, StringComparison.OrdinalIgnoreCase))).FirstOrDefault(Function(x) x IsNot Nothing)
+        If found IsNot Nothing Then Return found
+
+        If Not String.IsNullOrEmpty(fontName) Then
+            Try
+                Dim sys = FontFamily.Families.FirstOrDefault(Function(f) f.Name.Equals(fontName, StringComparison.OrdinalIgnoreCase))
+                If sys IsNot Nothing Then Return sys
+            Catch
+            End Try
+        End If
+
+        Return Nothing
     End Function
 
     Shared Function GetFont(category As FontCategory, fontName As String, Optional size As Single = DefaultFontSize, Optional fontStyle As FontStyle = FontStyle.Regular, Optional graphicsUnit As GraphicsUnit = GraphicsUnit.Point, Optional gdiCharSet As Byte = 0) As Font
@@ -73,16 +102,25 @@ Public NotInheritable Class FontManager
         Dim family = GetFontFamily(category, fontName)
 
         If family IsNot Nothing Then
-            Return GetFont(family, size, fontStyle)
+            Return GetFont(family, size, fontStyle, graphicsUnit, gdiCharSet)
         End If
 
-        Return New Font(_fontCollections.First().Value.Families.First(), size * s.UIScaleFactor, fontStyle, graphicsUnit, gdiCharSet)
+        If _fontCollections.Any() AndAlso _fontCollections.First().Value.Families.Any() Then
+            Return New Font(_fontCollections.First().Value.Families.First(), size * s.UIScaleFactor, fontStyle, graphicsUnit, gdiCharSet)
+        End If
+
+        ' フォントコレクションが存在しない場合の安全なシステムフォントフォールバック
+        Dim fallbackFamily = SystemFonts.MessageBoxFont?.FontFamily
+        If fallbackFamily Is Nothing Then fallbackFamily = FontFamily.GenericSansSerif
+        Dim actualScale = If(s IsNot Nothing, s.UIScaleFactor, 1.0F)
+        Return New Font(fallbackFamily, size * actualScale, fontStyle, graphicsUnit, gdiCharSet)
     End Function
 
     Shared Function GetFont(fontFamily As FontFamily, Optional size As Single = DefaultFontSize, Optional fontStyle As FontStyle = FontStyle.Regular, Optional graphicsUnit As GraphicsUnit = GraphicsUnit.Point, Optional gdiCharSet As Byte = 0) As Font
-        If Not _fontCollections.Any() Then Init()
-
-        Return New Font(fontFamily, size * s.UIScaleFactor, fontStyle, graphicsUnit, gdiCharSet)
+        Dim actualFamily = If(fontFamily, SystemFonts.MessageBoxFont?.FontFamily)
+        If actualFamily Is Nothing Then actualFamily = FontFamily.GenericSansSerif
+        Dim actualScale = If(s IsNot Nothing, s.UIScaleFactor, 1.0F)
+        Return New Font(actualFamily, size * actualScale, fontStyle, graphicsUnit, gdiCharSet)
     End Function
 
     Shared Function GetCodeFont(Optional sizeOffset As Single = 0.0, Optional fontStyle As FontStyle = FontStyle.Regular) As Font
@@ -93,8 +131,9 @@ Public NotInheritable Class FontManager
             Return GetFont(family, size, fontStyle)
         End If
 
-        Dim font = GetFont(FontCategory.Code, s.Fonts(FontCategory.Code), size, fontStyle)
-        _currentFontFamilies.Add(FontCategory.Code, font.FontFamily)
+        Dim fontName = If(s?.Fonts?.ContainsKey(FontCategory.Code) = True, s.Fonts(FontCategory.Code), "Consolas")
+        Dim font = GetFont(FontCategory.Code, fontName, size, fontStyle)
+        _currentFontFamilies(FontCategory.Code) = font.FontFamily
         Return font
     End Function
 
@@ -106,8 +145,9 @@ Public NotInheritable Class FontManager
             Return GetFont(family, size, fontStyle)
         End If
 
-        Dim font = GetFont(FontCategory.Default, s.Fonts(FontCategory.Default), size, fontStyle)
-        _currentFontFamilies.Add(FontCategory.Default, font.FontFamily)
+        Dim fontName = If(s?.Fonts?.ContainsKey(FontCategory.Default) = True, s.Fonts(FontCategory.Default), "")
+        Dim font = GetFont(FontCategory.Default, fontName, size, fontStyle)
+        _currentFontFamilies(FontCategory.Default) = font.FontFamily
         Return font
     End Function
 
@@ -119,12 +159,12 @@ Public NotInheritable Class FontManager
             Return GetFont(family, size, fontStyle)
         End If
 
-        Dim font = GetFont(FontCategory.Thumbnail, s.Fonts(FontCategory.Thumbnail), size, fontStyle)
-        _currentFontFamilies.Add(FontCategory.Thumbnail, font.FontFamily)
+        Dim fontName = If(s?.Fonts?.ContainsKey(FontCategory.Thumbnail) = True, s.Fonts(FontCategory.Thumbnail), "")
+        Dim font = GetFont(FontCategory.Thumbnail, fontName, size, fontStyle)
+        _currentFontFamilies(FontCategory.Thumbnail) = font.FontFamily
         Return font
     End Function
 End Class
-
 
 Public Enum FontCategory
     All

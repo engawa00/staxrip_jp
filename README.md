@@ -1,4 +1,4 @@
-﻿[![GitHub Release](https://img.shields.io/github/v/release/staxrip/staxrip?style=plastic&logo=Github&logoColor=white&label=Release&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/releases/latest)
+[![GitHub Release](https://img.shields.io/github/v/release/staxrip/staxrip?style=plastic&logo=Github&logoColor=white&label=Release&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/releases/latest)
 [![GitHub License](https://img.shields.io/github/license/staxrip/staxrip?style=plastic&logo=GitHub&logoColor=white&label=License&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/blob/master/License.txt)
 [![GitHub all releases](https://img.shields.io/github/downloads/staxrip/staxrip/total?style=plastic&logo=GitHub&logoColor=white&label=Total%20Downloads&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/releases/latest)
 [![GitHub Repo stars](https://img.shields.io/github/stars/staxrip/staxrip?style=plastic&logo=GitHub&logoColor=white&label=Stars&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip)
@@ -9,6 +9,20 @@
 
 -------------
 
+> [!WARNING]
+> ### ⚠️ Disclaimer / 免責事項 (MIT License)
+>
+> **【日本語】**  
+> - **ライセンスと免責**: 本リポジトリおよび日本語化に関連するすべての変更は、オリジナルと同様に [MIT License](License.txt) の下で提供されています。MIT License の規定に基づき、本ソフトウェアは「現状有姿（AS IS）」で提供され、明示または黙示を問わず、動作保証・商品性・特定目的への適合性等に関するいかなる保証も行いません。
+> - **非公式フォーク**: 本リポジトリは StaxRip の**非公式かつ開発中の日本語化フォーク**です。日本語化に関する変更・追加・不具合はオリジナルの StaxRip プロジェクトおよび開発者様とは**一切無関係**です。本フォークに関する質問や不具合報告をオリジナルのプロジェクトへ問い合わせることは固くご遠慮ください。
+> - **利用上の注意**: 本フォークは開発途上の実験的変更を含んでいるため、予期せぬ動作が発生する可能性があります。MIT License の許諾の範囲内で、すべてご自身の責任においてご利用ください。
+>
+> **【English】**  
+> - **License & Warranty Disclaimer**: This repository and all modifications related to the Japanese localization are distributed under the terms of the [MIT License](License.txt). Consistent with the MIT License, this software is provided **"AS IS", WITHOUT WARRANTY OF ANY KIND**, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement.
+> - **Unofficial Fork**: This repository is an **unofficial, work-in-progress fork** of StaxRip. All changes and additions in this fork are completely **unaffiliated with and independent of the original StaxRip project and its upstream authors**. Please do NOT contact the upstream authors or the original repository regarding any issues, questions, or modifications related to this fork.
+> - **Usage Note**: As this fork contains ongoing and experimental localization changes, unexpected behavior may occur. You are welcome to use, modify, and distribute it within the terms and permissions of the MIT License, entirely at your own risk.
+
+-------------
 # About
 
 StaxRip is a powerful video/audio encoding GUI for Windows.  

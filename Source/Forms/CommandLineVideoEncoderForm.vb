@@ -217,6 +217,13 @@ Public Class CommandLineVideoEncoderForm
         RestoreClientSize(50, 22)
         Me.Encoder = encoder
 
+        laType.Text = Localization.Translate("Output File Type:")
+        laPercent.Text = Localization.Translate("Aimed Quality (%):")
+        EncodingControl.Text = Localization.Translate("Command Line")
+        CompCheckControl.Text = Localization.Translate("Compressibility Check")
+        bnOK.Text = Localization.Translate("OK")
+        bnCancel.Text = Localization.Translate("Cancel")
+
         cbQualityMode.Checked = encoder.QualityMode
         tbType.Text = encoder.OutputExt
 

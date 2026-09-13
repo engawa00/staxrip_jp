@@ -1,4 +1,4 @@
-﻿
+
 Imports System.ComponentModel
 Imports System.Drawing.Design
 
@@ -337,7 +337,7 @@ Namespace UI
                 End If
 
                 Items.Add(cmi)
-                tsi.Text = cmi.Text
+                tsi.Text = Localization.Translate(cmi.Text)
 
                 If TypeOf menu Is ToolStripMenuItem Then
                     DirectCast(menu, ToolStripMenuItem).DropDownItems.Add(tsi)
@@ -385,7 +385,7 @@ Namespace UI
         End Sub
 
         Sub New(text As String)
-            MyBase.New(text)
+            MyBase.New(Localization.Translate(text))
         End Sub
 
         Sub New(text As String, a As Action)
@@ -397,9 +397,9 @@ Namespace UI
                 Optional tooltip As String = Nothing,
                 Optional enabled As Boolean = True)
 
-            Me.Text = text
+            Me.Text = Localization.Translate(text)
             Me.Action = action
-            Me.Help = tooltip
+            Me.Help = Localization.Translate(tooltip)
             Me.Enabled = enabled
         End Sub
 
@@ -501,7 +501,7 @@ Namespace UI
                         End If
                     Else
                         Dim item As New MenuItemEx()
-                        item.Text = a(x)
+                        item.Text = Localization.Translate(a(x))
                         item.Path = p
                         item.Tag = Nothing
                         l.Add(item)

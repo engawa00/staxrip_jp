@@ -1,4 +1,4 @@
-﻿
+
 Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Drawing.Drawing2D
@@ -993,6 +993,7 @@ Partial Public Class MainForm
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
         g.MainForm = Me
         If loadSettings Then g.LoadSettings()
+        Localization.CurrentLanguage = s.Language
         g.LoadAudioProfiles()
         g.LoadVideoEncoderProfiles()
         g.LoadEvents()
@@ -1072,11 +1073,13 @@ Partial Public Class MainForm
         CustomSizeMenu.BuildMenu()
         SizeContextMenuStrip.ResumeLayout()
 
-        NextContextMenuStrip.Add("Add to top and open Jobs", Sub() AddJob(True, 0))
-        NextContextMenuStrip.Add("Add to bottom and open Jobs", Sub() AddJob(True, -1))
+        NextContextMenuStrip.Add(Localization.Translate("Add to top and open Jobs"), Sub() AddJob(True, 0))
+        NextContextMenuStrip.Add(Localization.Translate("Add to bottom and open Jobs"), Sub() AddJob(True, -1))
         NextContextMenuStrip.Add("-")
-        NextContextMenuStrip.Add("Add to top w/o opening Jobs", Sub() AddJob(False, 0))
-        NextContextMenuStrip.Add("Add to bottom w/o opening Jobs", Sub() AddJob(False, -1))
+        NextContextMenuStrip.Add(Localization.Translate("Add to top w/o opening Jobs"), Sub() AddJob(False, 0))
+        NextContextMenuStrip.Add(Localization.Translate("Add to bottom w/o opening Jobs"), Sub() AddJob(False, -1))
+
+        ApplyLocalization()
 
         g.SetRenderer(MenuStrip)
 
@@ -1085,6 +1088,20 @@ Partial Public Class MainForm
 
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         AddHandler FiltersListView.Changed, AddressOf ApplyFilters
+    End Sub
+
+    Sub ApplyLocalization()
+        gbAssistant.Text = Localization.Translate("Assistant")
+        gbAudio.Text = Localization.Translate("Audio")
+        lgbFilters.Text = Localization.Translate("Filters")
+        lgbEncoder.Text = Localization.Translate("Encoder")
+        lgbTarget.Text = Localization.Translate("Target")
+        lgbSource.Text = Localization.Translate("Source")
+        lgbResize.Text = Localization.Translate("Size")
+        bnNext.Text = Localization.Translate("Next")
+        lZoom.Text = Localization.Translate("Zoom")
+        lPixel.Text = Localization.Translate("Pixel")
+        laBitrate.Text = Localization.Translate("Bitrate")
     End Sub
 
     Protected Overrides Sub Dispose(disposing As Boolean)

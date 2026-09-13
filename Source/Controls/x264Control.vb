@@ -1,4 +1,4 @@
-﻿
+
 Imports System.Web.UI.WebControls.WebParts
 Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
@@ -151,6 +151,10 @@ Public Class x264Control
 
         AddHandler Params.ValueChanged, AddressOf ParamsValueChanged
         AddHandler lv.UpdateContextMenu, AddressOf UpdateMenu
+
+        blConfigCodec.Text = Localization.Translate("Options")
+        tblOverrideName.Text = Localization.Translate("Name Override")
+        blConfigContainer.Text = Localization.Translate("Container Options")
 
         UpdateControls()
         ApplyTheme()
@@ -318,13 +322,13 @@ Public Class x264Control
     Sub UpdateControls()
         If Encoder.QualityMode AndAlso lv.Items.Count < 4 Then
             lv.Items.Clear()
-            lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(Params.Quant.Value)}))
-            lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
-            lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
+            lv.Items.Add(New ListViewItem({Localization.Translate("Quality"), GetQualityCaption(Params.Quant.Value)}))
+            lv.Items.Add(New ListViewItem({Localization.Translate("Preset"), Params.Preset.OptionText}))
+            lv.Items.Add(New ListViewItem({Localization.Translate("Tune"), Params.Tune.OptionText}))
         ElseIf Params.Mode.Value <> 2 AndAlso lv.Items.Count <> 3 Then
             lv.Items.Clear()
-            lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
-            lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
+            lv.Items.Add(New ListViewItem({Localization.Translate("Preset"), Params.Preset.OptionText}))
+            lv.Items.Add(New ListViewItem({Localization.Translate("Tune"), Params.Tune.OptionText}))
         End If
 
         tblOverrideName.State = Encoder.OverridesTargetFileName
