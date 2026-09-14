@@ -652,6 +652,7 @@ Namespace Global.StaxRip
             Dict("YUV to RGB") = "YUV → RGB変換"
             Dict("HDR max mastering luminance level (in cd/m2)? (Default: 1000.0)") = "HDR最大マスタリング輝度レベル (cd/m2) を入力してください (デフォルト: 1000.0):"
             Dict("HDR max mastering luminance level (in cd/m2)? (Default: 10000.0)") = "HDR最大マスタリング輝度レベル (cd/m2) を入力してください (デフォルト: 10000.0):"
+            Dict("FrameServer.dll was not found in the application directory. Please make sure all StaxRip dependencies are installed properly.") = "アプリケーションディレクトリに FrameServer.dll が見つかりませんでした。StaxRip の依存コンポーネントが正しく配置されているか確認してください。"
         End Sub
     End Module
 End Namespace

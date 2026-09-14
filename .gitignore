@@ -1,4 +1,4 @@
-﻿
+
 /.vs
 /Source/.vs
 /Source/bin
@@ -19,3 +19,6 @@
 /Source/TaskDialog/WPFTest/bin
 /Source/TaskDialog/WPFTest/obj
 *.aps
+*.7z
+*.zip
+scratch/

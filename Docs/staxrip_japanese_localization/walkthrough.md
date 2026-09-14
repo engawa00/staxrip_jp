@@ -58,11 +58,30 @@ PowerShell 7 (`pwsh`) および Windows PowerShell 5.1 の双方で完全ヘッ�
   - 英語モード切り替え: 原文英語がそのまま返ることを確認
 - **テスト 2 (ヘッドレスソース動画生成)**:
   - FFmpeg lavfi testsrc による 1 秒テスト動画生成: **正常作成**
-- **テスト 3 (動画エンコード実走検証)**:
-  - パターン 1 (CRF 23 fast): **成功**
-  - パターン 2 (CRF 28 veryfast 640x360): **成功**
-  - パターン 3 (2pass 固定 500kbps): **成功**
-  - パターン 4 (Tune film, Profile high, CRF 20): **成功**
-- **テスト 4 (成果物完全クリーンアップ)**:
-  - テスト終了後、生成した動画ファイルおよびログファイルの全自動削除・クリーンアップを確認。
+- **テスト 3 (動画エンコード検証 - 4パターン)**:
+  - CRF 23, Preset fast: **成功**
+  - CRF 28, Preset veryfast, リサイズ 640x360: **成功**
+  - 2パス 固定ビットレート 500kbps: **成功**
+  - Tune film, Profile high, CRF 20: **成功**
+- **クリーンアップ**:
+  - テスト生成された動画ファイルは全自動で完全削除（リポジトリ内に一切残留なし）。
+
+---
+
+### 3. 起動時エラー対応と防衛ガード実装・実行環境セットアップ
+ユーザーから報告された起動時エラー2件への対応を実施：
+
+1. **エラーの原因調査と特定**:
+   - `DirectoryNotFoundException`（`Apps\Conf`）: Git 管理外の大容量外部バイナリフォルダ（`Apps`）が存在しないため。
+   - `EntryPointNotFoundException`（`CreateVapourSynthServer`）: 実行ディレクトリに `FrameServer.dll` が無いため、Windows が誤ってシステム標準の `C:\Windows\System32\FrameServer.dll`（カメラ用）をロードしたため。
+2. **防衛ガードの実装**:
+   - [Source/General/Package.vb](Source/General/Package.vb): `LoadConfAll()` で `Apps\Conf` のディレクトリ存在チェックを追加し、`GetConf()` で `ConfPath` のファイル存在チェックを追加。未配置環境でも例外クラッシュしないよう防護。
+   - [Source/Video/FrameServer.vb](Source/Video/FrameServer.vb) & [Source/Tools/AutoCrop/Main.vb](Source/Tools/AutoCrop/Main.vb): ネイティブ DLL 呼び出し前に `Folder.Startup\FrameServer.dll` の存在チェックを追加。不在時は親切なエラーメッセージを表示し、System32 の誤ロードを防止。
+   - [Source/General/Localization.vb](Source/General/Localization.vb) & [Source/Settings/Languages/ja.json](Source/Settings/Languages/ja.json): `FrameServer.dll` 不足メッセージの日本語訳を追加。
+   - [.gitignore](.gitignore): `*.7z`, `*.zip`, `scratch/` を追記。
+3. **実行環境セットアップ（方法B）**:
+   - 公式 `StaxRip-v2.52.5-x64.7z` をダウンロード・展開し、`Apps`、`Fonts`、`Icons`、`FrameServer.dll` を `Source\bin` に配置。
+   - 最新の日本語化版 `StaxRip.exe` および `ja.json` を再ビルド・配置。
+   - ヘッドレス自動テストを実行して全パス（All Passed）を確認。
+   - 確認完了後、ダウンロードした大容量一時アーカイブ（約704MB）を完全に削除。
 - **総合結果**: **All Passed!**

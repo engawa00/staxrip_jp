@@ -1,4 +1,4 @@
-﻿
+
 Imports System.Runtime.ExceptionServices
 Imports System.Runtime.InteropServices
 Imports Microsoft.Win32
@@ -18,6 +18,11 @@ Public Class DirectFrameServer
     <HandleProcessCorruptedStateExceptions>
     Sub CreateAndOpen(path As String)
         Try
+            Dim dllPath = IO.Path.Combine(Folder.Startup, "FrameServer.dll")
+            If Not IO.File.Exists(dllPath) Then
+                Throw New IO.FileNotFoundException(Localization.Translate("FrameServer.dll was not found in the application directory. Please make sure all StaxRip dependencies are installed properly.") + BR2 + dllPath)
+            End If
+
             If path.Ext = "avs" Then
                 Environment.SetEnvironmentVariable("AviSynthDLL", Package.AviSynth.Path)
                 NativeServer = CreateAviSynthServer()

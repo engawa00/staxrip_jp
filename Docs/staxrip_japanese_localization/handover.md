@@ -11,7 +11,7 @@
 1. **言語切り替え・辞書方式**:
    - [Source/General/Localization.vb](Source/General/Localization.vb) モジュールにより、`Translate(text)` / `GetText(text)` による自動辞書引き翻訳を提供。
    - 内部組み込みの標準日本語辞書（UI、メニュー、x264/x265/NVEnc/QSVEnc/VCEEnc/SVT-AV1 のタブ・パラメータ・選択肢、AviSynth/VapourSynth フィルター名・マクロプロンプト等）を保持。
-   - 外部辞書ファイル（`Settings\Languages\ja.json` または `ja.txt`）からの動的拡張・上書きに対応。
+   - 外部辞書ファイル（[Source/Settings/Languages/ja.json](Source/Settings/Languages/ja.json)）からの動的拡張・上書きに対応。
    - `CurrentLanguage` プロパティおよび `SetLanguage(lang)` により即時切り替え可能（"ja" / "en"）。
 2. **設定保存**:
    - [Source/General/ApplicationSettings.vb](Source/General/ApplicationSettings.vb) の `ApplicationSettings` クラス（シングルトン `s`）に `Public Language As String = "ja"` を追加。
@@ -33,10 +33,15 @@
    - フィルター管理・対話ダイアログ:
      - フィルターリストビュー: [Source/Controls/FiltersListView.vb](Source/Controls/FiltersListView.vb)（ヘッダー、カテゴリ、メニュー、ツールチップ説明）
      - ダイアログマクロ: [Source/General/Macro.vb](Source/General/Macro.vb)（`$enter_text:` の入力プロンプト、`$select:` のタイトル・選択肢ラベルを翻訳）
-4. **ビルド環境の自律性**:
-   - VS Community 2026 環境でも MSBuild 単体でビルドできるよう、`Microsoft.NETFramework.ReferenceAssemblies.net48` を [Source/packages.config](Source/packages.config) および [Source/StaxRip.vbproj](Source/StaxRip.vbproj) に正式統合済み。
-   - ビルド実行コマンド: `MSBuild.exe "Source\StaxRip.vbproj" /p:Configuration=Release /p:Platform=x64`（または Developer Command Prompt から実行）
-5. **免責事項（MIT License 準拠）の明記**:
+4. **起動時防衛ガード（例外防止）**:
+   - `Apps\Conf` 存在チェック: [Source/General/Package.vb](Source/General/Package.vb) の `LoadConfAll()` で `Apps\Conf` 存在チェックを追加し、`GetConf()` で `ConfPath` 存在チェックを追加（`DirectoryNotFoundException` 防止）。
+   - `FrameServer.dll` 存在チェック: [Source/Video/FrameServer.vb](Source/Video/FrameServer.vb) および [Source/Tools/AutoCrop/Main.vb](Source/Tools/AutoCrop/Main.vb) で、ネイティブ DLL 呼び出し前に `Folder.Startup\FrameServer.dll` の存在チェックを追加。未配置時に Windows 標準の `C:\Windows\System32\FrameServer.dll` が誤ロードされて `EntryPointNotFoundException` が発生するのを防止。
+5. **実行環境と配備（Source\bin）**:
+   - 公式 `StaxRip-v2.52.5-x64.7z` から必要な外部ツール群（`Apps` フォルダ：x264, x265, VapourSynth, AviSynth, FFmpeg, MKVToolNix 等）、`Fonts`、`Icons`、および C++ ネイティブブリッジ `FrameServer.dll` を `Source\bin` に完全配備済み。
+   - `Source\bin\StaxRip.exe` を直接起動して利用可能。
+   - 大容量一時アーカイブ（約704MB）は正常展開・動作確認後に完全削除済み。
+   - `.gitignore` に `*.7z`, `*.zip`, `scratch/` を追記済み。
+6. **免責事項（MIT License 準拠）の明記**:
    - [README.md](README.md) 先頭に、MIT License に基づく「現状有姿（AS IS）」での提供、無保証条項、非公式フォークである旨およびオリジナル側への問い合わせ禁止、開発途上の自己責任利用に関する免責事項を英語と日本語で記載済み。
 
 ---
@@ -49,27 +54,31 @@
 2. **VB.NET 構文の制約**:
    - `_` 単体は VB.NET の「行継続文字」であるため、メソッド名に `_` を定義・呼び出しすると構文エラー（`BC30203`）になる。必ず `Translate` / `GetText` を使用すること。
 3. **フォント管理（FontManager）と初回起動の注意点**:
-   - StaxRip は `Fonts` フォルダ内の TTF フォントを参照するが、ビルド直後は存在しない場合があるため、`FontManager.vb` でディレクトリ存在チェックおよびシステムフォント（`Yu Gothic UI` 等）への自動フォールバックを実装済み。
+   - StaxRip は `Fonts` フォルダ内の TTF フォントを参照するが、存在しない場合でもシステムフォント（`Yu Gothic UI` 等）への自動フォールバックが実装されている。
    - `Folder.Settings` プロパティは未設定時に設定フォルダ選択モーダルダイアログ（GUI）を表示するため、ヘッドレス環境や事前辞書ロード時には `g.SettingsFolderExists` をチェックすること。
-4. **PowerShell 互換性**:
+4. **ビルドコマンド**:
+   - Visual Studio 2026 環境の MSBuild パス: `C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe`
+   - ビルド実行: `& "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe" "Source\StaxRip.vbproj" /p:Configuration=Release /p:Platform=x64`
+5. **PowerShell 互換性**:
    - `run_headless_tests.ps1` は PowerShell 7 (`pwsh`) および Windows PowerShell 5.1 の双方に対応。UTF-8 with BOM で保存し、NativeCommandError を防止するため外部 CLI コマンド実行前に `$ErrorActionPreference = "Continue"` を設定している。
 
 ---
 
 ## 4. 現在のステータス
-- **コード変更 & バイナリ**: 実装完了・コンパイル確認済み（Release / x64、0警告 0エラー）。
-  - 実行可能バイナリ: `Source/bin/StaxRip.exe`（依存 DLL 等も同ディレクトリに出力）
+- **コード変更 & バイナリ**: 全実装・防衛ガード完了、コンパイル確認済み（Release / x64、0警告 0エラー）。
+  - 実行可能バイナリ: `Source/bin/StaxRip.exe`（必要な `Apps` フォルダ、`FrameServer.dll`、依存 DLL 等がすべて同ディレクトリに配備済み）
 - **テスト**: ヘッドレス自動テストスイート [run_headless_tests.ps1](run_headless_tests.ps1) により、
   1. ローカライズ辞書引きおよび日英切り替え動作検証（UI、メニュー、x264/x265/NVEnc/QSVEnc/VCEEnc/SVT-AV1 のタブ・パラメータ・選択肢、フィルターUI、マクロプロンプト等 全55項目）: 正常パス
   2. ヘッドレスソース動画生成: 正常パス
   3. 4種類のエンコードオプションパターン（CRF 23 fast / CRF 28 veryfast resize / 2pass 500k / Tune film Profile high）のエンコード実行: 全て正常パス
   4. テスト用動画ファイルの完全クリーンアップ: 完了確認済み
-- **外部辞書ファイル**: `Source/Settings/Languages/ja.json` を拡充・更新済み。
+- **外部辞書ファイル**: `Source/Settings/Languages/ja.json` を最新の追加項目含め同期済み。
+- **一時ファイル**: 公式配布アーカイブ（約704MB）は削除済み。Git ステータスも極めてクリーン。
 
 ---
 
-## 5. 次に行うべきこと（今後の拡張・発展作業）
-1. **実機 GUI での操作・表示確認**:
-   - ユーザーの実機環境で `Source/bin/StaxRip.exe` を起動し、各エンコーダー（NVEnc, QSVEnc, VCEEnc, SVT-AV1）の設定ダイアログやフィルター設定画面の表示バランス（文字の収まり、レイアウト）を確認する。
-2. **特殊な外部プラグイン・個別スクリプトの追加翻訳**:
-   - ユーザー独自の VapourSynth/AviSynth 外部スクリプトや新規追加プラグインで未翻訳のパラメータがあれば、`Settings/Languages/ja.json` への追記または `Localization.vb` への登録で随時拡充する。
+## 5. 次に行うべきこと（実機確認・運用）
+1. **実機 GUI での起動確認**:
+   - `Source/bin/StaxRip.exe` を直接ダブルクリックして起動し、2件のエラーが解消されて日本語 UI で正常に起動することを確認する。
+2. **エンコーダー設定・フィルター設定のレイアウト確認**:
+   - 実機環境で各種エンコーダー（NVEnc, QSVEnc, VCEEnc, SVT-AV1）の設定ダイアログやフィルター設定画面を開き、表示バランス（文字の収まり、レイアウト）を確認する。

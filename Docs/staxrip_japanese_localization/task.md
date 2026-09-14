@@ -65,3 +65,11 @@ StaxRip の多言語対応（言語切り替え機能）および網羅的な日
 
 - [x] **フェーズ 11: ドキュメント更新（walkthrough.md, handover.md 等）**
 
+- [x] **フェーズ 12: 起動時エラー対応・防衛ガード実装および実行環境セットアップ（方法B）**
+  - [x] `Package.vb` に `Apps\Conf` および `ConfPath` の存在チェックガードを追加（`DirectoryNotFoundException` 防止）
+  - [x] `FrameServer.vb` および `AutoCrop\Main.vb` に `FrameServer.dll` の存在チェックガードを追加（Windows System32 同名 DLL の誤読込による `EntryPointNotFoundException` 防止）
+  - [x] `Localization.vb` および `ja.json` に `FrameServer.dll` 不足時のエラーメッセージ日本語訳を追加
+  - [x] 公式アーカイブ `StaxRip-v2.52.5-x64.7z` を取得・展開し、`Apps`、`Fonts`、`Icons`、`FrameServer.dll` を `Source\bin` に配置
+  - [x] `.gitignore` に `*.7z`, `*.zip`, `scratch/` を追記
+  - [x] MSBuild によるリビルド（0警告 0エラー）およびヘッドレス自動テスト（All Passed）の検証確認
+  - [x] 正常動作確認後、ダウンロードした大容量一時アーカイブ（約704MB）を完全に削除

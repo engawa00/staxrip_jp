@@ -1,4 +1,4 @@
-﻿
+
 Imports System.Drawing
 Imports System.Drawing.Imaging
 Imports System.IO
@@ -205,6 +205,11 @@ Public Class DirectFrameServer
     Private NativeServer As INativeFrameServer
 
     Sub New(path As String)
+        Dim dllPath = IO.Path.Combine(Application.StartupPath, "FrameServer.dll")
+        If Not IO.File.Exists(dllPath) Then
+            Throw New IO.FileNotFoundException("FrameServer.dll was not found in the application directory." + Environment.NewLine + dllPath)
+        End If
+
         If path.ToLower.EndsWith(".avs") Then
             NativeServer = CreateAviSynthServer()
         Else

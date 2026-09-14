@@ -91,5 +91,6 @@
   "Enable Auto Gain?": "自動ゲイン (Auto Gain) を有効にしますか？",
   "Is the Input using TV Range?": "入力はTVレンジ (Limited 16-235) ですか？",
   "Select Input Color Matrix": "入力カラーマトリックスを選択してください:",
-  "Select the Bit Depth you want to convert to": "変換先の色深度 (ビット数) を選択してください:"
+  "Select the Bit Depth you want to convert to": "変換先の色深度 (ビット数) を選択してください:",
+  "FrameServer.dll was not found in the application directory. Please make sure all StaxRip dependencies are installed properly.": "アプリケーションディレクトリに FrameServer.dll が見つかりませんでした。StaxRip の依存コンポーネントが正しく配置されているか確認してください。"
 }

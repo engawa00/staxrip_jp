@@ -1,4 +1,4 @@
-﻿
+
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.IO
@@ -3447,6 +3447,7 @@ Public Class Package
     End Property
 
     Function GetConf() As String
+        If Not IO.File.Exists(ConfPath) Then Return ""
         Return FileHelp.ReadAllText(ConfPath)
     End Function
 
@@ -3454,13 +3455,16 @@ Public Class Package
         If Not WasConfLoaded Then
             WasConfLoaded = True
 
-            For Each i In IO.Directory.GetFiles(IO.Path.Combine(Folder.Apps, "Conf"))
-                If Items.ContainsKey(i.Base) Then
-                    Items(i.Base).LoadConf()
-                Else
-                    FileHelp.Delete(i)
-                End If
-            Next
+            Dim confDir = IO.Path.Combine(Folder.Apps, "Conf")
+            If IO.Directory.Exists(confDir) Then
+                For Each i In IO.Directory.GetFiles(confDir)
+                    If Items.ContainsKey(i.Base) Then
+                        Items(i.Base).LoadConf()
+                    Else
+                        FileHelp.Delete(i)
+                    End If
+                Next
+            End If
         End If
     End Sub
 
