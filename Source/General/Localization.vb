@@ -653,6 +653,260 @@ Namespace Global.StaxRip
             Dict("HDR max mastering luminance level (in cd/m2)? (Default: 1000.0)") = "HDR最大マスタリング輝度レベル (cd/m2) を入力してください (デフォルト: 1000.0):"
             Dict("HDR max mastering luminance level (in cd/m2)? (Default: 10000.0)") = "HDR最大マスタリング輝度レベル (cd/m2) を入力してください (デフォルト: 10000.0):"
             Dict("FrameServer.dll was not found in the application directory. Please make sure all StaxRip dependencies are installed properly.") = "アプリケーションディレクトリに FrameServer.dll が見つかりませんでした。StaxRip の依存コンポーネントが正しく配置されているか確認してください。"
+
+            '=== ダイアログボタン・定型アクション ===
+            Dict("Yes") = "はい"
+            Dict("No") = "いいえ"
+            Dict("Cancel") = "キャンセル"
+            Dict("Retry") = "再試行"
+            Dict("Close") = "閉じる"
+            Dict("Abort") = "中止"
+            Dict("Ignore") = "無視"
+            Dict("Copy Message") = "メッセージをコピー"
+            Dict("Message was copied to clipboard.") = "メッセージをクリップボードにコピーしました。"
+            Dict("Choose an option") = "選択肢を選択してください"
+            Dict("Restore defaults?") = "初期設定に戻しますか？"
+            Dict("Restore the default templates?") = "デフォルトのテンプレートに戻しますか？"
+            Dict("Defaults were restored.") = "初期設定に戻しました。"
+            Dict("Are you sure?") = "本当に実行しますか？"
+            Dict("Confirm") = "確認"
+            Dict("Select a template") = "テンプレートの選択"
+            Dict("Please select a template you want to use:") = "使用するテンプレートを選択してください:"
+            Dict("Menu Editor") = "メニューエディター"
+            Dict("Restore Defaults...") = "初期設定に戻す..."
+            Dict("Import Command Line...") = "コマンドラインをインポート..."
+
+            '=== エラーメッセージ (MsgError / 例外) ===
+            Dict("The first filter must be a source filter.") = "最初のフィルターはソースフィルターである必要があります。"
+            Dict("Only idx, srt and ass file types are supported.") = "対応している字幕形式は idx, srt, ass のみです。"
+            Dict("Only idx, srt, ass and sup file types are supported.") = "対応している字幕形式は idx, srt, ass, sup のみです。"
+            Dict("Downloaded file is missing.") = "ダウンロードされたファイルが見つかりません。"
+            Dict("File missing after extraction.") = "展開後にファイルが見つかりません。"
+            Dict("Source file not found!") = "ソースファイルが見つかりません！"
+            Dict("Project file not found!") = "プロジェクトファイルが見つかりません！"
+            Dict("Project file not found.") = "プロジェクトファイルが見つかりません。"
+            Dict("Unable to play audio.") = "音声を再生できません。"
+            Dict("Script Error") = "スクリプトエラー"
+            Dict("Something went wrong, the Long Path Support was not enabled!") = "エラーが発生しました。長いパスのサポート (Long Path Support) を有効にできませんでした！"
+            Dict("3D demuxing isn't supported.") = "3D デマックスには対応していません。"
+            Dict("No chapter file found.") = "チャプターファイルが見つかりませんでした。"
+            Dict("Follow assistant message in main dialog.") = "メイン画面のアシスタントのメッセージに従ってください。"
+            Dict("The temp folder could not be created.") = "一時フォルダを作成できませんでした。"
+            Dict("Only fixed local drives are supported as temp dir.") = "一時フォルダには固定ローカルドライブのみ指定可能です。"
+            Dict("Source filter returned invalid parameters") = "ソースフィルターが無効なパラメータを返しました"
+            Dict("AviSynth installation not found,{BR}using portable mode instead.") = "AviSynth のインストールが見つかりません。{BR}代わりにポータブル版を使用します。"
+            Dict("VapourSynth installation not found,{BR}using portable mode instead.") = "VapourSynth のインストールが見つかりません。{BR}代わりにポータブル版を使用します。"
+            Dict("AviSynth installation not found, using portable mode instead.") = "AviSynth のインストールが見つかりません。代わりにポータブル版を使用します。"
+            Dict("VapourSynth installation not found, using portable mode instead.") = "VapourSynth のインストールが見つかりません。代わりにポータブル版を使用します。"
+            Dict("Custom paths within the startup folder are not permitted") = "スタートアップフォルダ内のカスタムパスは許可されていません"
+            Dict("Custom paths within the startup folder are not permitted.") = "スタートアップフォルダ内のカスタムパスは許可されていません。"
+            Dict("The auto update feature does currently not support MediaFire.") = "自動更新機能は現在 MediaFire に対応していません。"
+            Dict("Folder is already in PATH") = "フォルダはすでに PATH に登録されています"
+            Dict("Folder is not in PATH") = "フォルダは PATH に登録されていません"
+            Dict("File not found") = "ファイルが見つかりません"
+            Dict("An error occured") = "エラーが発生しました"
+            Dict("Bug Report") = "バグ報告"
+            Dict("Do you want to open the log file?") = "ログファイルを開きますか？"
+            Dict("Do you want to report an issue or bug?") = "問題やバグを報告しますか？"
+            Dict("Failed to archive log file") = "ログファイルのアーカイブに失敗しました"
+            Dict("Failed to load source.") = "ソースの読み込みに失敗しました。"
+            Dict("Failed to create a temp directory.") = "一時フォルダの作成に失敗しました。"
+
+            '=== 警告メッセージ (MsgWarn) ===
+            Dict("Correct font was not found, using default instead!") = "指定されたフォントが見つからなかったため、デフォルトフォントを使用します！"
+            Dict("Functionality is no longer available.") = "この機能は利用できなくなりました。"
+            Dict("Filename contains invalid characters.") = "ファイル名に無効な文字が含まれています。"
+            Dict("No active filter of category 'Source' found.") = "有効な 'Source' カテゴリのフィルターが見つかりません。"
+            Dict("Windows Terminal not found!") = "Windows Terminal が見つかりません！"
+            Dict("A template cannot be created after a source file was opened.") = "ソースファイルを開いた後はテンプレートを作成できません。"
+            Dict("No playlist directory found.") = "プレイリストフォルダが見つかりませんでした。"
+            Dict("Recovery not saved!") = "リカバリプロジェクトを保存できませんでした！"
+            Dict("The file VIDEO_TS.VOB can't be opened.") = "VIDEO_TS.VOB ファイルを開くことができません。"
+            Dict("Opening files from an optical drive requires to set a temp files folder in the options.") = "光学ドライブからファイルを開くには、オプションで一時ファイルフォルダを設定する必要があります。"
+            Dict("Assistant warning cannot be skipped.") = "アシスタントの警告をスキップすることはできません。"
+            Dict("Please follow the assistant.") = "アシスタントの指示に従ってください。"
+            Dict("Invalid format") = "無効なフォーマットです"
+            Dict("Compatibility problem!") = "互換性の問題"
+            Dict("Source file is missing!") = "ソースファイルが見つかりません！"
+            Dict("Be aware!") = "ご注意ください！"
+            Dict("Every not selected, listed or identified file type will be deleted!") = "選択・一覧表示・識別されていないすべてのファイル形式が削除されます！"
+            Dict("The input format isn't supported by the current encoder, convert to WAV or FLAC first or enable piping in the options.") = "入力形式は現在のエンコーダーでサポートされていません。事前にWAVまたはFLACに変換するか、オプションでパイピングを有効にしてください。"
+            Dict("eac3to output was empty") = "eac3to の出力が空でした"
+
+            '=== 情報メッセージ (MsgInfo) ===
+            Dict("All Good!") = "すべて正常です！"
+            Dict("No update available.") = "利用可能なアップデートはありません。"
+            Dict("Download was canceled or failed.") = "ダウンロードがキャンセルされたか、失敗しました。"
+            Dict("Update was canceled.") = "アップデートはキャンセルされました。"
+            Dict("Tip") = "ヒント"
+            Dict("Job added") = "ジョブを追加しました"
+            Dict("Manual Merging") = "手動結合"
+            Dict("Download Complete") = "ダウンロードが完了しました"
+            Dict("Already Running the Latest Version!") = "すでに最新バージョンを実行しています！"
+            Dict("Already Running the Latest Version") = "すでに最新バージョンを実行しています"
+            Dict("Please restart StaxRip.") = "StaxRip を再起動してください。"
+            Dict("The profile was saved.") = "プロファイルを保存しました。"
+            Dict("OK!") = "OK!"
+            Dict("All tools have OK status!") = "すべてのツールが正常な状態です！"
+            Dict("All required tools have OK status!") = "すべての必須ツールが正常な状態です！"
+            Dict("No custom paths defined.") = "カスタムパスは設定されていません。"
+            Dict("Nothing found.") = "見つかりませんでした。"
+            Dict("The path was copied to the clipboard.") = "パスをクリップボードにコピーしました。"
+            Dict("Folder was added to PATH") = "フォルダを PATH に追加しました"
+            Dict("Folder was removed from PATH") = "フォルダを PATH から削除しました"
+
+            '=== 質問・確認メッセージ (MsgQuestion) ===
+            Dict("Remove Selection?") = "選択項目を削除しますか？"
+            Dict("Delete current files?") = "現在のファイルを削除しますか？"
+            Dict("Copy new files?") = "新しいファイルをコピーしますか？"
+            Dict("Are you sure you want to reset your settings? Your current settings will be lost!") = "設定をリセットしてもよろしいですか？現在の設定は失われます！"
+            Dict("Saving outside Template Folder") = "テンプレートフォルダ外への保存"
+            Dict("Confirm to process the track.") = "このトラックの処理を実行しますか？"
+            Dict("Confirm to process ALL audio tracks.") = "すべての音声トラックの処理を実行しますか？"
+            Dict("Include sub folders?") = "サブフォルダも含めますか？"
+            Dict("Import command line from clipboard?") = "クリップボードからコマンドラインをインポートしますか？"
+            Dict("Remove?") = "削除しますか？"
+            Dict("Experimental feature not working for all tools, continue?") = "すべてのツールで動作するとは限らない実験的機能です。続行しますか？"
+            Dict("Close while Thumbnailer is running?") = "サムネイル作成中に終了しますか？"
+            Dict("This might take a while...") = "少し時間がかかる場合があります..."
+            Dict("Thumbnail sheet creation failed!") = "サムネイルシートの作成に失敗しました！"
+            Dict("Thumbnail sheet has been created.") = "サムネイルシートが作成されました。"
+            Dict("Some thumbnail sheet creation failed!") = "一部のサムネイルシートの作成に失敗しました！"
+            Dict("All thumbnail sheet creation failed!") = "すべてのサムネイルシートの作成に失敗しました！"
+            Dict("All thumbnail sheets have been created.") = "すべてのサムネイルシートが作成されました。"
+
+            '=== サブメニュー・ダイアログ UI 項目 ===
+            Dict("Apps Management") = "外部ツールの管理"
+            Dict("Edit Path") = "パスを編集"
+            Dict("Find Path") = "パスを検索"
+            Dict("Clear Paths") = "パスをクリア"
+            Dict("Copy Path") = "パスをコピー"
+            Dict("Show Grid") = "グリッド表示"
+            Dict("Check All") = "すべての状態を確認"
+            Dict("Check Required Only") = "必須ツールのみ確認"
+            Dict("Auto Update") = "自動アップデート"
+            Dict("Update Request") = "アップデート要求"
+            Dict("Explore") = "フォルダを開く"
+            Dict("Launch") = "起動"
+            Dict("Edit Version") = "バージョンを編集"
+            Dict("Edit Changelog") = "更新履歴を編集"
+            Dict("Status") = "状態"
+            Dict("Version") = "バージョン"
+            Dict("Required") = "必須"
+            Dict("Path") = "パス"
+            Dict("Location") = "場所"
+            Dict("Job") = "ジョブ"
+            Dict("State") = "状態"
+            Dict("Start Time") = "開始時刻"
+            Dict("End Time") = "終了時刻"
+            Dict("Duration") = "所要時間"
+            Dict("Log") = "ログ"
+            Dict("Add Audio Track") = "音声トラックを追加"
+            Dict("Audio Streams") = "音声ストリーム"
+            Dict("Channels") = "チャンネル数"
+            Dict("Sampling Rate") = "サンプリングレート"
+            Dict("Language") = "言語"
+            Dict("Delay") = "遅延 (ms)"
+            Dict("Gain") = "ゲイン"
+            Dict("Normalize") = "ノーマライズ"
+        End Sub
+
+        ''' <summary>
+        ''' フォームおよび配置されているコントロール群の表示テキストを辞書に基づいて再帰的にローカライズします。
+        ''' </summary>
+        Public Sub ApplyLocalization(c As Control)
+            If c Is Nothing OrElse CurrentLanguage.Equals("en", StringComparison.OrdinalIgnoreCase) Then Return
+
+            If TypeOf c Is Form Then
+                If Not String.IsNullOrEmpty(c.Text) Then
+                    c.Text = Translate(c.Text)
+                End If
+            End If
+
+            ApplyLocalizationInternal(c)
+        End Sub
+
+        Private Sub ApplyLocalizationInternal(c As Control)
+            If c Is Nothing Then Return
+
+            'ユーザー入力コントロールはテキスト翻訳を除外
+            Dim skipText = TypeOf c Is TextBox OrElse
+                           TypeOf c Is RichTextBox OrElse
+                           TypeOf c Is NumericUpDown OrElse
+                           TypeOf c Is ProgressBar
+
+            If Not skipText AndAlso Not String.IsNullOrEmpty(c.Text) Then
+                Dim isEditableCombo = False
+                If TypeOf c Is ComboBox Then
+                    Dim cb = DirectCast(c, ComboBox)
+                    If cb.DropDownStyle = ComboBoxStyle.DropDown OrElse cb.DropDownStyle = ComboBoxStyle.Simple Then
+                        isEditableCombo = True
+                    End If
+                End If
+
+                If Not isEditableCombo Then
+                    c.Text = Translate(c.Text)
+                End If
+            End If
+
+            'ListViewの列ヘッダー
+            If TypeOf c Is ListView Then
+                Dim lv = DirectCast(c, ListView)
+                For Each col As ColumnHeader In lv.Columns
+                    If Not String.IsNullOrEmpty(col.Text) Then
+                        col.Text = Translate(col.Text)
+                    End If
+                Next
+            End If
+
+            'TabControlのTabPage
+            If TypeOf c Is TabControl Then
+                Dim tc = DirectCast(c, TabControl)
+                For Each page As TabPage In tc.TabPages
+                    If Not String.IsNullOrEmpty(page.Text) Then
+                        page.Text = Translate(page.Text)
+                    End If
+                Next
+            End If
+
+            'ToolStrip / MenuStrip / StatusStrip
+            If TypeOf c Is ToolStrip Then
+                Dim ts = DirectCast(c, ToolStrip)
+                For Each item As ToolStripItem In ts.Items
+                    ApplyLocalizationToToolStripItem(item)
+                Next
+            End If
+
+            'ContextMenuStripが設定されている場合
+            If c.ContextMenuStrip IsNot Nothing Then
+                For Each item As ToolStripItem In c.ContextMenuStrip.Items
+                    ApplyLocalizationToToolStripItem(item)
+                Next
+            End If
+
+            '子コントロールを再帰走査
+            For Each child As Control In c.Controls
+                ApplyLocalizationInternal(child)
+            Next
+        End Sub
+
+        Private Sub ApplyLocalizationToToolStripItem(item As ToolStripItem)
+            If item Is Nothing Then Return
+
+            If Not String.IsNullOrEmpty(item.Text) Then
+                item.Text = Translate(item.Text)
+            End If
+
+            If Not String.IsNullOrEmpty(item.ToolTipText) Then
+                item.ToolTipText = Translate(item.ToolTipText)
+            End If
+
+            If TypeOf item Is ToolStripDropDownItem Then
+                Dim ddi = DirectCast(item, ToolStripDropDownItem)
+                For Each subItem As ToolStripItem In ddi.DropDownItems
+                    ApplyLocalizationToToolStripItem(subItem)
+                Next
+            End If
         End Sub
     End Module
 End Namespace

@@ -479,7 +479,7 @@ Namespace UI
 
                 For Each i In l.OfType(Of ToolStripMenuItem)()
                     If x < a.Length - 1 Then
-                        If i.Text = a(x) Then
+                        If i.Text = a(x) OrElse i.Text = Localization.Translate(a(x)) Then
                             found = True
                             l = i.DropDownItems
                             Exit For

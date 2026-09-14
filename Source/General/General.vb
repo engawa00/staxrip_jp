@@ -1,4 +1,4 @@
-﻿
+
 Imports System.Runtime.Serialization
 Imports System.ComponentModel
 Imports System.Runtime.Serialization.Formatters.Binary
@@ -1229,8 +1229,8 @@ Public Module MainModule
         If title = "" Then Exit Sub
 
         Using td As New TaskDialog(Of String)
-            td.Title = title
-            td.Content = content
+            td.Title = Localization.Translate(title)
+            td.Content = Localization.Translate(content)
             td.Owner = handle
             td.Icon = TaskIcon.Error
             td.ShowCopyButton = True
@@ -1274,8 +1274,8 @@ Public Module MainModule
     Function Msg(title As String, content As String, icon As TaskIcon, buttons As TaskButton) As DialogResult
         Using td As New TaskDialog(Of DialogResult)
             td.Icon = icon
-            td.Title = title
-            td.Content = content
+            td.Title = Localization.Translate(title)
+            td.Content = Localization.Translate(content)
             td.Buttons = buttons
             Return td.Show()
         End Using

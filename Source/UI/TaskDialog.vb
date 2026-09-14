@@ -1,4 +1,4 @@
-﻿
+
 Imports System.Text
 Imports System.Threading
 Imports System.Threading.Tasks
@@ -43,6 +43,10 @@ Public Class TaskDialog(Of T)
     Sub Init()
         ShowInTaskbar = False
         Width = FontHeight * 35
+
+        Title = Localization.Translate(Title)
+        Content = Localization.Translate(Content)
+        ExpandedContent = Localization.Translate(ExpandedContent)
 
         Content = If(Content = "", " ", Content)
         Title = If(Title = "", " ", Title)
@@ -139,13 +143,13 @@ Public Class TaskDialog(Of T)
                 End If
 
                 Dim b As New ButtonEx With {
-                    .Text = bd.Text,
+                    .Text = Localization.Translate(bd.Text),
                     .Tag = bd.Value,
                     .TabStop = True,
                     .TabIndex = i
                 }
 
-                If AcceptButton Is Nothing AndAlso bd.Text = "OK" Then
+                If AcceptButton Is Nothing AndAlso (bd.Text = "OK" OrElse bd.Text = Localization.Translate("OK")) Then
                     AcceptButton = b
                 End If
 
@@ -162,8 +166,8 @@ Public Class TaskDialog(Of T)
 
             For Each command In CommandDefinitions
                 Dim cb As New CommandButton With {
-                    .Title = command.Text,
-                    .Description = command.Description,
+                    .Title = Localization.Translate(command.Text),
+                    .Description = Localization.Translate(command.Description),
                     .Tag = command
                 }
 
@@ -326,7 +330,7 @@ Public Class TaskDialog(Of T)
                 TaskButton.Cancel, TaskButton.Retry, TaskButton.Close}
 
                 If value.HasFlag(i) Then
-                    AddButton(i.ToString, CType(CObj(GetDialogResultFromButton(i)), T))
+                    AddButton(Localization.Translate(i.ToString), CType(CObj(GetDialogResultFromButton(i)), T))
                 End If
             Next
         End Set
@@ -464,7 +468,7 @@ Public Class TaskDialog(Of T)
     WriteOnly Property ShowCopyButton As Boolean
         Set(value As Boolean)
             If value Then
-                blCopyMessage.Text = "Copy Message"
+                blCopyMessage.Text = Localization.Translate("Copy Message")
                 blCopyMessage.Visible = True
                 blCopyMessage.ClickAction = Sub()
                                                 g.RunSTATask(Sub()

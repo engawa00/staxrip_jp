@@ -1,4 +1,4 @@
-﻿[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $ErrorActionPreference = "Stop"
 
 Write-Host "=====================================================" -ForegroundColor Cyan
@@ -107,7 +107,54 @@ try {
         @{ Key = "Enable Auto Gain?"; Expected = "自動ゲイン (Auto Gain) を有効にしますか？" },
         @{ Key = "Is the Input using TV Range?"; Expected = "入力はTVレンジ (Limited 16-235) ですか？" },
         @{ Key = "Select Input Color Matrix"; Expected = "入力カラーマトリックスを選択してください:" },
-        @{ Key = "Select the Bit Depth you want to convert to"; Expected = "変換先の色深度 (ビット数) を選択してください:" }
+        @{ Key = "Select the Bit Depth you want to convert to"; Expected = "変換先の色深度 (ビット数) を選択してください:" },
+
+        # ダイアログボタン・定型アクション
+        @{ Key = "Yes"; Expected = "はい" },
+        @{ Key = "No"; Expected = "いいえ" },
+        @{ Key = "Cancel"; Expected = "キャンセル" },
+        @{ Key = "Retry"; Expected = "再試行" },
+        @{ Key = "Copy Message"; Expected = "メッセージをコピー" },
+        @{ Key = "Select a template"; Expected = "テンプレートの選択" },
+        @{ Key = "Please select a template you want to use:"; Expected = "使用するテンプレートを選択してください:" },
+
+        # エラーメッセージ (MsgError / 例外)
+        @{ Key = "The first filter must be a source filter."; Expected = "最初のフィルターはソースフィルターである必要があります。" },
+        @{ Key = "Source file not found!"; Expected = "ソースファイルが見つかりません！" },
+        @{ Key = "Project file not found!"; Expected = "プロジェクトファイルが見つかりません！" },
+        @{ Key = "Script Error"; Expected = "スクリプトエラー" },
+        @{ Key = "The temp folder could not be created."; Expected = "一時フォルダを作成できませんでした。" },
+        @{ Key = "Only fixed local drives are supported as temp dir."; Expected = "一時フォルダには固定ローカルドライブのみ指定可能です。" },
+        @{ Key = "Only idx, srt and ass file types are supported."; Expected = "対応している字幕形式は idx, srt, ass のみです。" },
+
+        # 警告メッセージ (MsgWarn)
+        @{ Key = "Windows Terminal not found!"; Expected = "Windows Terminal が見つかりません！" },
+        @{ Key = "Compatibility problem!"; Expected = "互換性の問題" },
+        @{ Key = "Source file is missing!"; Expected = "ソースファイルが見つかりません！" },
+        @{ Key = "Assistant warning cannot be skipped."; Expected = "アシスタントの警告をスキップすることはできません。" },
+
+        # 情報メッセージ (MsgInfo)
+        @{ Key = "All Good!"; Expected = "すべて正常です！" },
+        @{ Key = "Please restart StaxRip."; Expected = "StaxRip を再起動してください。" },
+        @{ Key = "The profile was saved."; Expected = "プロファイルを保存しました。" },
+        @{ Key = "Folder was added to PATH"; Expected = "フォルダを PATH に追加しました" },
+        @{ Key = "Folder was removed from PATH"; Expected = "フォルダを PATH から削除しました" },
+
+        # 質問・確認メッセージ (MsgQuestion)
+        @{ Key = "Are you sure you want to reset your settings? Your current settings will be lost!"; Expected = "設定をリセットしてもよろしいですか？現在の設定は失われます！" },
+        @{ Key = "Restore defaults?"; Expected = "初期設定に戻しますか？" },
+        @{ Key = "Confirm to process ALL audio tracks."; Expected = "すべての音声トラックの処理を実行しますか？" },
+        @{ Key = "This might take a while..."; Expected = "少し時間がかかる場合があります..." },
+
+        # サブメニュー・ダイアログUI
+        @{ Key = "Apps Management"; Expected = "外部ツールの管理" },
+        @{ Key = "Edit Path"; Expected = "パスを編集" },
+        @{ Key = "Check All"; Expected = "すべての状態を確認" },
+        @{ Key = "Auto Update"; Expected = "自動アップデート" },
+        @{ Key = "Job"; Expected = "ジョブ" },
+        @{ Key = "Duration"; Expected = "所要時間" },
+        @{ Key = "Add Audio Track"; Expected = "音声トラックを追加" },
+        @{ Key = "Audio Streams"; Expected = "音声ストリーム" }
     )
 
     foreach ($c in $checks) {
@@ -117,6 +164,31 @@ try {
         }
         Write-Host "  OK: '$($c.Key)' -> '$actual'" -ForegroundColor Green
     }
+
+    # コントロール再帰的ローカライズ (ApplyLocalization) の検証
+    Write-Host "`n  [サブテスト] FormBase / コントロール再帰的ローカライズ (ApplyLocalization) 検証..." -ForegroundColor Gray
+    $dummyForm = New-Object System.Windows.Forms.Form
+    $dummyForm.Text = "Options"
+    $dummyBtn = New-Object System.Windows.Forms.Button
+    $dummyBtn.Text = "Cancel"
+    $dummyLbl = New-Object System.Windows.Forms.Label
+    $dummyLbl.Text = "Quality"
+    $dummyForm.Controls.Add($dummyBtn)
+    $dummyForm.Controls.Add($dummyLbl)
+
+    [StaxRip.Localization]::ApplyLocalization($dummyForm)
+
+    if ($dummyForm.Text -ne "設定") {
+        throw "Form.Text translation failed: expected '設定', got '$($dummyForm.Text)'"
+    }
+    if ($dummyBtn.Text -ne "キャンセル") {
+        throw "Button.Text translation failed: expected 'キャンセル', got '$($dummyBtn.Text)'"
+    }
+    if ($dummyLbl.Text -ne "品質") {
+        throw "Label.Text translation failed: expected '品質', got '$($dummyLbl.Text)'"
+    }
+    $dummyForm.Dispose()
+    Write-Host "  OK: ApplyLocalization による Form / Button / Label の自動翻訳正常" -ForegroundColor Green
 
     # 英語切り替え検証
     [StaxRip.Localization]::set_CurrentLanguage("en")

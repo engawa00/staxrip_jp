@@ -1,4 +1,4 @@
-﻿
+
 Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Windows.Input
@@ -150,6 +150,7 @@ Namespace UI
                 If Not (ModifierKeys.HasFlag(Keys.Control Or Keys.Shift)) Then
                     s.WindowPositions?.RestorePosition(Me)
                 End If
+                Localization.ApplyLocalization(Me)
             End If
 
             MyBase.OnLoad(args)

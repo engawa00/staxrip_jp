@@ -1,0 +1,22 @@
+# タスクリスト: サブメニュー・ダイアログ・エラーメッセージの網羅的日本語化
+
+- [x] 1. プロジェクト内ドキュメントおよび環境準備 <!-- id: 0 -->
+    - [x] トピックフォルダ `docs/dialog_and_menu_localization/` の作成 <!-- id: 1 -->
+    - [x] `task.md` の作成 <!-- id: 2 -->
+    - [x] `implementation_plan.md` の保存 <!-- id: 3 -->
+- [x] 2. ローカライズ基盤の改修 <!-- id: 4 -->
+    - [x] `Source/General/Localization.vb` に `ApplyLocalization(control As Control)` を実装 <!-- id: 5 -->
+    - [x] `Source/General/General.vb` の `Msg`, `MsgError`, `MsgWarn`, `MsgOK`, `MsgQuestion` に `Translate` を適用 <!-- id: 6 -->
+    - [x] `Source/UI/TaskDialog.vb` の `Init()`, ボタン, コマンド, コピー等の翻訳処理を追加 <!-- id: 7 -->
+    - [x] `Source/UI/Menu.vb` の `MenuItemEx.Add` における親ノードマッチング判定を修正 <!-- id: 8 -->
+    - [x] `Source/UI/Misc.vb` の `FormBase.OnLoad` に `Localization.ApplyLocalization(Me)` を追加 <!-- id: 9 -->
+- [x] 3. 辞書データの網羅的拡充 <!-- id: 10 -->
+    - [x] `Source/General/Localization.vb` の内蔵辞書にダイアログ、メッセージ、サブメニュー項目を網羅追加 <!-- id: 11 -->
+    - [x] `Source/Settings/Languages/ja.json` に最新の翻訳エントリを反映・同期 <!-- id: 12 -->
+- [x] 4. ビルドおよびテスト検証 <!-- id: 13 -->
+    - [x] MSBuild による Release / x64 コンパイル検証（0警告 0エラー） <!-- id: 14 -->
+    - [x] `run_headless_tests.ps1` の拡充とテスト実行（全88項目＋ApplyLocalization＋4パターンエンコード正常パス） <!-- id: 15 -->
+- [x] 5. ドキュメント最終化 <!-- id: 16 -->
+    - [x] `walkthrough.md` の作成 <!-- id: 17 -->
+    - [x] `handover.md` の作成 <!-- id: 18 -->
+    - [x] `task.md` の完了更新 <!-- id: 19 -->
