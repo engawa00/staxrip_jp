@@ -1,4 +1,4 @@
-﻿
+
 Imports System.ComponentModel
 
 Imports StaxRip.UI
@@ -35,7 +35,7 @@ Public Class FiltersListView
     End Sub
 
     Sub Load()
-        g.MainForm.lgbFilters.Text = If(p.Script.IsAviSynth, "AVS Filters", "VS Filters")
+        g.MainForm.lgbFilters.Text = If(p.Script.IsAviSynth, Localization.Translate("AVS Filters"), Localization.Translate("VS Filters"))
 
         BlockItemCheck = True
         Items.Clear()
@@ -45,7 +45,7 @@ Public Class FiltersListView
             Dim item As New ListViewItem
             item.Tag = filter
             item.Checked = filter.Active
-            item.SubItems.Add(filter.Category)
+            item.SubItems.Add(Localization.Translate(filter.Category))
 
             If filter.Name = "" Then
                 item.SubItems.Add(filter.Script)
@@ -135,7 +135,7 @@ Public Class FiltersListView
                     End If
 
                     Dim selectedFilter = DirectCast(SelectedItems(0).Tag, VideoFilter)
-                    active.Text = selectedFilter.Category
+                    active.Text = Localization.Translate(selectedFilter.Category)
 
                     For Each i In filterProfiles
                         If i.Name = selectedFilter.Category Then

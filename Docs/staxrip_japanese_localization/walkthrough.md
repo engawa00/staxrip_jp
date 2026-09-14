@@ -1,87 +1,68 @@
-# 変更内容の確認 (Walkthrough): StaxRip 日本語化
+# ウォークスルー: エンコーダー（NVEnc/QSVEnc/VCEEnc/SVT-AV1）およびフィルター詳細設定の日本語化拡充
 
-## 概要
-StaxRip の多言語対応（言語切り替え機能）および網羅的な日本語ローカライズを実装し、MSBuild による完全コンパイルと、ウィンドウを表示しない完全ヘッドレス自動テストスイートによる動作検証・複数オプションでの動画エンコード検証（テスト動画のクリーンアップ含む）を完了しました。
+handover.md (Line 58) に記載されたタスク「NVEnc, QSVEnc, VCEEnc, SVT-AV1 や AviSynth+/VapourSynth 各種フィルター固有の詳細パラメータ・ヘルプテキストの日本語訳エントリーを追加・拡充する」を実施・完了しました。
 
 ---
 
-## 実施した主な変更内容
+## 変更内容の概要
 
-### 1. ビルド環境の自律解決
-- **課題**: VS Community 2026 環境で .NET Framework 4.8 の Reference Assemblies が存在せず、MSBuild 単体でのビルドが失敗していた。
-- **対応**: NuGet パッケージ `Microsoft.NETFramework.ReferenceAssemblies.net48`（[Source/packages.config](Source/packages.config)）を統合し、[Source/StaxRip.vbproj](Source/StaxRip.vbproj) に正式組み込み。環境依存なしで MSBuild 単体で 0警告 0エラーでビルド可能にしました。
+### 1. エンコーダー固有設定・UI のローカライズ拡充
+- **タブ名・カテゴリ階層の日本語訳**:
+  - `Input/Output`（入出力）、`Slice Decision`（スライス判定）、`Motion Search`（動き探索）、`GOP size/type`（GOP構造・サイズ）、`AV1 Specific 1/2`（AV1固有設定 1/2）、`Color Description`（色情報記述）、`Variance Boost Options`（分散ブースト設定）
+  - `VPP`（VPPフィルター）、`Colorspace`（色空間）、`HDR2SDR`（HDR→SDR変換）、`Ngx-TrueHDR`、`Deband`（バンディング低減）、`LibPlacebo`、`Tonemapping`（トーンマッピング）、`Sharpness`（鮮鋭化）、`Deinterlace 2`、`Denoise 2/3` など
+- **エンコーダー詳細パラメータ名・選択肢の日本語訳**:
+  - レート制御（CBR, VBR, CQP, QVBR, CRF, 目標ビットレート, 最大ビットレート, VBVバッファサイズ, 初期QP, 最小/最大QP等）
+  - フレーム構造・予測（GOP長, 最小GOP長, Bフレーム数, 参照フレーム数, 適応量子化 AQ-Mode / AQ Strength / CAQ, 動き探索範囲等）
+  - 色空間・VUI（原色色度, 伝達特性, マトリックス係数, カラーレンジ, Mastering Display, MaxCLL/MaxFALL, Dolby Vision RPU 等）
+  - VPP フィルターパラメータ（KNN/PMD/Smooth/FFT3D/NLMeans ノイズ除去, Deband 閾値/範囲/ディザー, パディング, 回転, 反転など）
+  - 選択肢（各モード、NVEnc/QSVEnc/FFmpeg ハードウェアデコード、P1〜P7 プリセット、低遅延/超低遅延、8/10/12ビット、Main 10、Main 444等）
+- **エンコーダーコントロール画面のローカライズ**:
+  - [Source/Controls/NVEncControl.vb](Source/Controls/NVEncControl.vb)
+  - [Source/Controls/SvtAv1EncAppControl.vb](Source/Controls/SvtAv1EncAppControl.vb)
+  - [Source/Controls/SvtAv1EncAppEssentialControl.vb](Source/Controls/SvtAv1EncAppEssentialControl.vb)
+  - [Source/Controls/SvtAv1EncAppHdrControl.vb](Source/Controls/SvtAv1EncAppHdrControl.vb)
+  - [Source/Controls/SvtAv1EncAppPsyexControl.vb](Source/Controls/SvtAv1EncAppPsyexControl.vb)
+  - [Source/Controls/SvtAv1EncAppTritiumControl.vb](Source/Controls/SvtAv1EncAppTritiumControl.vb)
+  - メイン画面のリスト表示項目（品質, モード, プリセット, チューン, 出力色深度, DV プロファイル, カラーレンジ, 速度, 高速デコード, 先行探索フレーム数, フィルムグレイン）およびボタン（設定, コンテナ設定, 圧縮率チェックを実行, 出力ファイル名を上書き）に `Localization.Translate` を適用。
 
-### 2. 多言語対応・ローカライズコア基盤の実装
-- **新規モジュール**: [Source/General/Localization.vb](Source/General/Localization.vb)
-  - `Translate(text)` / `GetText(text)` による自動辞書引き、フォールバック、フォーマット翻訳を提供。
-  - 内蔵の標準日本語辞書（UI、メニュー、エンコーダー、設定、メッセージ等）に加え、外部辞書ファイルからの動的読み込みに対応。
-  - `CurrentLanguage` プロパティおよび `SetLanguage(lang)` による即時言語切り替え（"ja" / "en"）。
-- **設定連携**: [Source/General/ApplicationSettings.vb](Source/General/ApplicationSettings.vb) に `Public Language As String = "ja"` を追加し、ユーザー設定として保持。
-- **設定画面**: [Source/Forms/MainForm_ShowSettings.vb](Source/Forms/MainForm_ShowSettings.vb)（General タブ）に表示言語ドロップダウン（`日本語 (Japanese)` / `English`）を追加。
+### 2. AviSynth+ / VapourSynth フィルター関連のローカライズ拡充
+- **フィルターリストビュー ([Source/Controls/FiltersListView.vb](Source/Controls/FiltersListView.vb))**:
+  - カテゴリ列表示、ヘッダー（種別, フィルター名）、メニュー項目（アクティブ, 置換, 挿入, 追加, 削除, コードを編集..., コードをプレビュー..., 情報..., 再生, プロファイル..., 上へ移動, 下へ移動, フィルターセットアップ）およびツールチップ説明文を日本語化。
+- **対話プロンプトマクロ ([Source/General/Macro.vb](Source/General/Macro.vb))**:
+  - `$enter_text:...$` の入力プロンプトテキスト、および `$select:...$` のダイアログタイトル・選択肢ラベルに `Localization.Translate` を適用（スクリプトに代入される実コードはそのまま保持しつつ、UI 表示のみを日本語化）。
+- **フィルタープロファイル・対話プロンプトの辞書登録**:
+  - 「入力はTVレンジですか？」「出力をTVレンジにしますか？」「自動ゲインを有効にしますか？」「変換先の色深度を選択してください」「カラーマトリックスを選択してください」「HDR最大マスタリング輝度レベル」等の日本語訳を追加。
 
-### 3. メイン画面・メニュー・コンテキストメニューのローカライズ
-- **メニュー**: [Source/UI/Menu.vb](Source/UI/Menu.vb) のメニューバーおよび全コンテキストメニューのテキスト生成時に `Translate` をフック。
-- **メイン画面**: [Source/Forms/MainForm.vb](Source/Forms/MainForm.vb) の `ApplyLocalization()` にて、Assistant、Audio、Size、Filters、Encoder、Next、Source、Target 等の各 UI 要素をローカライズ。
-
-### 4. エンコーダー設定画面の網羅的ローカライズ
-- **汎用コマンドライン画面**: [Source/Forms/CommandLineForm.vb](Source/Forms/CommandLineForm.vb) の `InitUI` において、タブ名（`param.Path`）、オプション項目名（`param.Text` / `param.Label`）、ヘルプ説明（`param.Help`）、選択肢（`oParam.Options`）に `Translate` を適用。
-- **エンコーダー画面**: [Source/Forms/CommandLineVideoEncoderForm.vb](Source/Forms/CommandLineVideoEncoderForm.vb)、[Source/Controls/x264Control.vb](Source/Controls/x264Control.vb)、[Source/Controls/x265Control.vb](Source/Controls/x265Control.vb) のボタン・項目名を日本語化。
-
-### 5. 免責事項（MIT License 準拠）の追記
-- [README.md](README.md) 先頭に、MIT License に準拠した「現状有姿（AS IS）」での提供、無保証条項、非公式フォークである旨およびオリジナル側への問い合わせ禁止、開発途上の自己責任利用に関する免責事項を英語・日本語で明記。
+### 3. 外部辞書の同期
+- [Source/Settings/Languages/ja.json](Source/Settings/Languages/ja.json) を更新し、今回追加した主要なタブ・パラメータ・選択肢・プロンプトを反映。
 
 ---
 
 ## 検証結果
 
 ### 1. ビルド検証
-```powershell
-MSBuild.exe Source\StaxRip.vbproj /p:Configuration=Release /p:Platform=x64 /t:Rebuild
-```
-- 結果: **0 警告、0 エラー**。`Source\bin\StaxRip.exe` の正常生成を確認。
+- **コンパイラ**: Visual Studio 2026 MSBuild (`MSBuild.exe` v18.9.1)
+- **ビルドコマンド**: `MSBuild.exe Source\StaxRip.vbproj /p:Configuration=Release /p:Platform=x64`
+- **結果**: **0 警告、0 エラー** でビルド成功（`Source\bin\StaxRip.exe` を正常出力）。
 
-### 2. ヘッドレス自動テストスイートの実行結果
-[run_headless_tests.ps1](run_headless_tests.ps1) によるウィンドウを一切表示しない完全ヘッドレステストを実行。
-
-```text
-=====================================================
- StaxRip 日本語版 ヘッドレス自動テストスイート
-=====================================================
-
-[テスト 1] ローカライズコアエンジンの検証...
-  OK: 'File' -> 'ファイル'
-  OK: 'Open Video Source File(s)...' -> '動画ソースファイルを開く...'
-  OK: 'Quality' -> '品質'
-  OK: 'Preset' -> 'プリセット'
-  OK: 'Tune' -> 'チューン'
-  OK: 'Assistant' -> 'アシスタント'
-  OK: 'Output File Type:' -> '出力ファイル形式:'
-  OK: 'Bitrate:' -> 'ビットレート:'
-  OK: 'Language (requires restart):' -> '表示言語 (要再起動):'
-  OK: 英語モードへの切り替え正常 (File -> File)
-
-[テスト 2] テスト用ソース動画の生成 (ヘッドレス)...
-  OK: テスト用ソース動画作成完了 (8312 bytes)
-
-[テスト 3] 複数オプションでの動画エンコード検証...
-  [パターン 1] x264 - CRF 23, Preset: fast
-    -> 成功! サイズ: 8549 bytes
-  [パターン 2] x264 - CRF 28, Preset: veryfast, 解像度リサイズ 640x360
-    -> 成功! サイズ: 10907 bytes
-  [パターン 3] x264 - 2パス 固定ビットレート 500kbps
-    -> 成功! サイズ: 21529 bytes
-  [パターン 4] x264 - Tune: film, Profile: high, CRF 20
-    -> 成功! サイズ: 9568 bytes
-
-すべてのテストが正常にパスしました!
-
-[クリーンアップ] テスト生成ファイルを削除中 (残さない方針)...
-  OK: クリーンアップ完了 (動画ファイルは一切残っていません)
-
-=====================================================
- テスト完了: All Passed!
-=====================================================
-```
-
-### 3. テスト生成ファイルのクリーンアップ確認
-- テストスクリプト内の `finally` 句による確実な削除ロジックおよび git 追跡外ファイルの検査により、生成された動画ファイル（`*.mp4`）や作業用一時ログがすべて削除されていることを確認済み。
+### 2. ヘッドレス自動テストスイート ([run_headless_tests.ps1](run_headless_tests.ps1))
+PowerShell 7 (`pwsh`) および Windows PowerShell 5.1 の双方で完全ヘッドレス実行：
+- **テスト 1 (ローカライズエンジン)**:
+  - 基本メニュー・UI 項目（File, Quality, Preset, Tune, Assistant 等）: **全て一致**
+  - エンコーダー タブ名（スライス判定, 動き探索, GOP構造・サイズ, 色情報記述, Ngx-TrueHDR, トーンマッピング等）: **全て一致**
+  - エンコーダー パラメータ名（デコーダー, 目標ビットレート, VBVバッファサイズ, 制限付き品質, 適応量子化, Dolby Vision RPU, 先行探索フレーム数, フィルムグレイン等）: **全て一致**
+  - エンコーダー 選択肢（QVBR固定品質モード, NVEncハードウェアデコード, QSVEncハードウェア, P1〜P7, 8ビット, 10ビット等）: **全て一致**
+  - エンコーダー コントロール画面（出力ファイル名を上書き, コンテナ設定, 圧縮率チェックを実行, 最高品質等）: **全て一致**
+  - フィルター UI・メニュー（AviSynth/VapourSynthフィルター, 置換, 挿入, コードを編集, 選択したフィルターを削除します等）: **全て一致**
+  - フィルター 対話プロンプト（以下の選択肢から1つ選択してください, 自動ゲインを有効にしますか, TVレンジですか, 入力カラーマトリックス等）: **全て一致**
+  - 英語モード切り替え: 原文英語がそのまま返ることを確認
+- **テスト 2 (ヘッドレスソース動画生成)**:
+  - FFmpeg lavfi testsrc による 1 秒テスト動画生成: **正常作成**
+- **テスト 3 (動画エンコード実走検証)**:
+  - パターン 1 (CRF 23 fast): **成功**
+  - パターン 2 (CRF 28 veryfast 640x360): **成功**
+  - パターン 3 (2pass 固定 500kbps): **成功**
+  - パターン 4 (Tune film, Profile high, CRF 20): **成功**
+- **テスト 4 (成果物完全クリーンアップ)**:
+  - テスト終了後、生成した動画ファイルおよびログファイルの全自動削除・クリーンアップを確認。
+- **総合結果**: **All Passed!**

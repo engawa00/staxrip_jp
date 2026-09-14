@@ -1,73 +1,85 @@
-# 実装計画: StaxRip 日本語版および言語切り替え機能の実装
+# 実装計画: エンコーダー（NVEnc/QSVEnc/VCEEnc/SVT-AV1）およびフィルター詳細設定の日本語化拡充
 
-StaxRip は元来、多言語化（ローカライズ機構）を持たず、Visual Basic コード中に英語の文言が直接ハードコードされています。
-本計画では、StaxRip に言語切り替え機能（日本語 / English）を導入し、メイン画面・メニューバー・設定画面から各エンコーダー詳細設定（x264/x265/NVEnc等）まで網羅的に日本語化する基盤と翻訳辞書を構築します。
+handover.md (Line 58) に記載された次フェーズ作業に基づき、NVEnc, QSVEnc, VCEEnc, SVT-AV1（各バリアント含む）および AviSynth+/VapourSynth フィルター固有の詳細設定・UI・ヘルプテキスト・対話プロンプトの包括的な日本語化を実施します。
 
 ---
 
-## ユーザー確認事項 (User Review Required)
+## ユーザー確認・承認が必要な事項
 
 > [!IMPORTANT]
-> **1. 言語切り替えと翻訳辞書の外部化**
-> 翻訳データはプログラム内に組み込まれる既定辞書に加え、`Settings/Languages/ja.json` のような外部 JSON ファイルとしても配置します。これにより、後から文言を微調整・追加したい場合にも再コンパイル不要で即座に反映できます。
->
-> **2. ビルド構成の調整**
-> 現在の環境（Visual Studio Community 2026）には .NET Framework 4.8 の SDK/Targeting Pack がプリインストールされていませんでしたが、公式の NuGet 参照アセンブリパッケージ (`Microsoft.NETFramework.ReferenceAssemblies.net48`) を `StaxRip.vbproj` に組み込むことで、追加のインストーラーなしで MSBuild によるクリーンビルドが成功することを確認しました。
+> - **テスト方針**: 既存のルールに従い、検証は**完全ヘッドレス**（GUI ウィンドウを表示させず、.NET リフレクションおよび CLI 実行）で行います。また、テスト中に生成された動画ファイルはテスト終了時に**必ず全てクリーンアップ（削除）**します。
+> - **辞書管理方針**: 基本辞書は `Source/General/Localization.vb` に内蔵し、ユーザーカスタマイズ可能な外部ファイル `Source/Settings/Languages/ja.json` にも同期して出力・配置します。
 
 ---
 
-## 変更内容とアーキテクチャ
+## 提案する変更内容
 
-### 1. ローカライズ基盤モジュール (`Source/General/Localization.vb`) [NEW]
-- **辞書エンジン**: `Dictionary(Of String, String)` によるキー（英語オリジナル文言）から翻訳文言への高速マッピング。
-- **翻訳関数**: 
-  - `Localization._(text As String) As String`（翻訳があれば日本語、なければ英語原文を返す安全なフォールバック機構）
-  - `Localization._(format As String, ParamArray args() As Object) As String`（書式付き文字列の安全な補間）
-- **外部ファイル読み込み**: アプリケーション起動時または言語切り替え時に JSON 辞書ファイルを読み込む。
-- **イベント通知**: 言語切り替え時に UI 全体を更新するイベント（`LanguageChanged`）を提供。
+### 1. エンコーダー固有設定・UI のローカライズ拡充
 
-### 2. 設定管理への言語項目の追加 (`Source/General/ApplicationSettings.vb`, `MainForm_ShowSettings.vb`) [MODIFY]
-- `ApplicationSettings.vb` に `Public Language As String = "ja"` を追加。
-- 設定画面（Tools > Settings）の General タブに「言語 / Language」ドロップダウンを追加。
+#### [MODIFY] [Source/General/Localization.vb](Source/General/Localization.vb)
+- **タブ名・カテゴリ階層の日本語訳**:
+  - `Input/Output`（入出力）、`Basic`（基本設定）、`Rate Control`（レート制御）、`Slice Decision`（スライス判定）、`Analysis`（分析・予測）、`Motion Search`（動き探索）、`Performance`（パフォーマンス）、`Statistic`（統計情報）
+  - `VPP`（VPPフィルター）、`Colorspace`（色空間）、`HDR2SDR`（HDR→SDR変換）、`Ngx-TrueHDR`（Ngx-TrueHDR）、`Deband`（バンディング低減）、`LibPlacebo`（LibPlacebo）、`Tonemapping`（トーンマッピング）、`Resize`（リサイズ）、`Sharpness`（鮮鋭化）、`Deinterlace`（インターレース解除）、`AFS 2`（AFS 自動フィールドシフト 2）
+  - `GOP size/type`（GOP構造・サイズ）、`AV1 Specific 1/2`（AV1固有設定 1/2）、`Color Description`（色情報記述）、`Variance Boost Options`（分散ブースト設定）、`Codec Specific`（コーデック固有設定）など
+- **エンコーダー詳細パラメータ名（約490項目）の日本語訳**:
+  - レート制御（CBR, VBR, CQP, QVBR, CRF, 目標ビットレート, 最大ビットレート, VBVバッファサイズ, 初期QP, 最小/最大QP等）
+  - フレーム構造・予測（GOP長, 最小GOP長, Bフレーム数, 参照フレーム数, 適応量子化 AQ-Mode / AQ Strength / CAQ, 動き探索範囲等）
+  - 色空間・VUI（Color Primaries, Transfer, Color Matrix, Range, Mastering Display, MaxCLL/MaxFALL, Dolby Vision RPU 等）
+  - VPP フィルター各パラメータ（Denoise 強度, Deband 閾値, Libplacebo 各種シェーダー/トーンマッピングパラメータ等）
+- **ドロップダウン選択肢（`.Options`）の日本語訳**:
+  - 各エンコーダーのモード、プリセット（P1〜P7、Quality、Performance等）、チューン（HQ, Low Latency, Lossless等）、プロファイル（Main, High, Main 10等）
+- **コントロール共通項目**:
+  - `Output Depth`（出力色深度 / 8-Bit, 10-Bit）、`Fast Decode`（高速デコード優先）、`Lookahead`（先行探索フレーム数）、`Film Grain`（フィルムグレイン生成/除去）等
 
-### 3. メインメニューおよびUIコントロールの自動ローカライズ [MODIFY]
-- **メニュー**: `Source/UI/Menu.vb` の `BuildMenu` メソッドにおいて、表示用テキスト `tsi.Text` に `Localization._(cmi.Text)` を適用。内部コマンド識別キーは原文のまま保持し、機能の互換性を完全に維持。
-- **メイン画面**: `Source/Forms/MainForm.vb` 内の各グループボックス、ボタン、ラベル、コンテキストメニューのテキストに `Localization._(...)` を適用。
-- **アシスタントヒント**: `MainForm_Assistant.vb` 内のアシスタント表示文言のローカライズ。
+#### [MODIFY] [Source/Controls/NVEncControl.vb](Source/Controls/NVEncControl.vb)
+- メイン画面の NVEnc コントロール内リスト項目（Quality, Mode, Preset, Tune, Output Depth, DV Profile, Color Range）および各ボタン（"Name Override", "Options", "Container Options", "Run Compressibility Check"）の `Localization.Translate` 適用。
 
-### 4. エンコーダー詳細設定の自動ローカライズ (`Source/Forms/CommandLineForm.vb`, `VideoEncoderCommandLine.vb`) [MODIFY]
-- `CommandLineForm.vb` の `InitUI` メソッドにおいて、ページパス（タブ名）、ラベル、ヘルプ、オプション選択肢に対して `Localization._(...)` を適用。
-- これにより、x264, x265, NVEnc, QSVEnc, VCEEnc, SVT-AV1, AOMEnc などの大量のエンコーダー設定画面が一元的に日本語化可能に。
-
-### 5. 主要ダイアログの日本語化 [MODIFY]
-- `JobsForm.vb`（ジョブ一覧・バッチ処理）
-- `CropForm.vb`（クロップ調整）
-- `PreviewForm.vb`（プレビュー再生・シーク）
-- `AudioForm.vb`（音声ストリーム・エンコーダー設定）
-- `MuxerForm.vb`（コンテナ・多重化設定）
-- `AppsForm.vb`（外部ツール管理）
-
-### 6. ビルド環境の永続化 (`Source/StaxRip.vbproj`, `Source/packages.config`) [MODIFY]
-- `Microsoft.NETFramework.ReferenceAssemblies.net48` をプロジェクトファイルに正式に組み込み、MSBuild 単体で即座にビルドできるようにする。
+#### [MODIFY] [Source/Controls/SvtAv1EncAppControl.vb](Source/Controls/SvtAv1EncAppControl.vb)
+- メイン画面の SVT-AV1 コントロール内リスト項目（Quality, Preset, Tune, Fast Decode, Lookahead, Film Grain）およびボタン類の `Localization.Translate` 適用。
+- 他の SVT-AV1 バリアントコントロール（`SvtAv1EncAppEssentialControl.vb`, `SvtAv1EncAppHdrControl.vb`, `SvtAv1EncAppPsyexControl.vb`, `SvtAv1EncAppTritiumControl.vb`）も必要に応じて同様に対応。
 
 ---
 
-## 検証計画 (Verification Plan)
+### 2. AviSynth+ / VapourSynth フィルター関連のローカライズ拡充
 
-### 自動テスト / ビルド検証
-- MSBuild を実行し、コンパイルエラー・警告が 0 であることを確認。
-  ```powershell
-  MSBuild.exe "Source\StaxRip.vbproj" -p:Configuration=Release -p:Platform=x64 -m
-  ```
+#### [MODIFY] [Source/Controls/FiltersListView.vb](Source/Controls/FiltersListView.vb)
+- リストビューのコンテキストメニュー（`active`, `Replace`, `Insert`, `Add`, `Remove`, `Edit Code...`, `Preview Code...`, `Info...`, `Play`, `Profiles...`, `Move Up`, `Move Down`, `Filter Setup`）およびツールチップ説明文の `Localization.Translate` 適用。
 
-### 手動検証
-1. **画面表示確認**:
-   - `StaxRip.exe` を起動し、メイン画面が自然な日本語で表示されることを確認。
-   - メインメニュー（ファイル、クロップ、プレビュー、プロジェクト、ツール、アプリ、ヘルプ）が日本語化されていることを確認。
-2. **言語切り替え確認**:
-   - 設定画面（Tools > Settings）から言語を「English」に変更して再起動後、英語に戻ることを確認。
-   - 再度「日本語」に変更して日本語に戻ることを確認。
-3. **エンコーダー設定確認**:
-   - エンコーダーオプション（x264 / x265 / NVEnc 等）を開き、タブ名や各パラメータの説明が日本語で表示されることを確認。
-4. **動作整合性確認**:
-   - コマンドライン生成やエンコード処理に日本語化による悪影響（予期せぬ文字列置換など）が生じないことを確認。
+#### [MODIFY] [Source/General/Macro.vb](Source/General/Macro.vb)
+- フィルタープロファイル等で使われるダイアログマクロ（`$enter_text:...$` や `$select:msg:...$`）のプロンプト表示テキスト、TaskDialog のタイトルおよび選択肢表示ラベルに `Localization.Translate` を適用（スクリプトに代入される実値は変更せず、UI 表示名のみ翻訳）。
+
+#### [MODIFY] [Source/General/Localization.vb](Source/General/Localization.vb)
+- フィルターカテゴリ名（`Source`, `Color`, `Field`, `Frame`, `Denoise`, `Sharpen`, `Resize`, `Misc`, `Subtitles`, `HDR to SDR`, `Tonemap` 等）の登録。
+- フィルターマクロのプロンプト（`Is the Input using TV Range?`, `Select Input Color Matrix`, `Enable Auto Gain?`, `HDR max mastering luminance level (in cd/m2)?` 等）の日本語訳登録。
+
+---
+
+### 3. 外部辞書ファイルおよびプロジェクトドキュメント
+
+#### [MODIFY] [Source/Settings/Languages/ja.json](Source/Settings/Languages/ja.json)
+- 追加した主要エントリーを `ja.json` にも反映。
+
+#### [MODIFY] [docs/staxrip_japanese_localization/task.md](docs/staxrip_japanese_localization/task.md)
+- 今回のフェーズ（フェーズ 7〜11）のタスクを追加・進捗管理。
+
+#### [MODIFY] [docs/staxrip_japanese_localization/walkthrough.md](docs/staxrip_japanese_localization/walkthrough.md)
+- 実装・検証結果のまとめを追記。
+
+#### [MODIFY] [docs/staxrip_japanese_localization/handover.md](docs/staxrip_japanese_localization/handover.md)
+- 本タスク完了後の最新状態に再構成。
+
+---
+
+## 検証計画
+
+### 自動テスト（完全ヘッドレス）
+1. **コンパイル検証**:
+   - `dotnet msbuild Source\StaxRip.vbproj /p:Configuration=Release /p:Platform=x64`
+   - エラー 0、警告 0 を確認。
+2. **ヘッドレステスト実行 (`run_headless_tests.ps1`)**:
+   - PowerShell スクリプトから .NET リフレクション経由で `Localization.Translate` を呼び出し：
+     - NVEnc/QSVEnc/VCEEnc/SVT-AV1 のタブ名、主要パラメータ、選択肢の翻訳が正しく行われるか検証。
+     - FiltersListView の各メニュー項目およびマクロプロンプトの翻訳が正しく行われるか検証。
+     - 言語を "en" に切り替えた際に原文英語がそのまま返ることを検証。
+   - 既存の動画エンコードテスト（FFmpeg 合成ソースを用いたエンコード実行）が全てパスすることを確認。
+   - テスト完了後にテスト動画ファイルが完全に削除されていることを確認。

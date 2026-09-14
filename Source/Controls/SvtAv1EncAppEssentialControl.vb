@@ -1,4 +1,4 @@
-﻿
+
 Imports System.Web.UI.WebControls.WebParts
 Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
@@ -212,6 +212,10 @@ Public Class SvtAv1EncAppEssentialControl
         blConfigContainer.Left = Width - blConfigContainer.Width - horizontalOffset
         blConfigContainer.Top = Height - blConfigContainer.Height - verticalOffset
 
+        blConfigCodec.Text = Localization.Translate("Options")
+        blConfigContainer.Text = Localization.Translate("Container Options")
+        blCompCheck.Text = Localization.Translate("Run Compressibility Check")
+
         Dim right = blConfigContainer.Left - blConfigCodec.Left
         Dim left = blConfigCodec.Left + blConfigCodec.Width + blConfigCodec.Left
         Dim adjustedText = "Target Name Override"
@@ -222,7 +226,7 @@ Public Class SvtAv1EncAppEssentialControl
             adjustedText = "Name Override"
         End If
 
-        tblOverrideName.Text = adjustedText
+        tblOverrideName.Text = Localization.Translate(adjustedText)
         tblOverrideName.Left = (right - left - tblOverrideName.Width) \ 2 + left
         tblOverrideName.Top = Height - tblOverrideName.Height - verticalOffset
     End Sub
@@ -406,7 +410,8 @@ Public Class SvtAv1EncAppEssentialControl
     Function GetQualityCaption(value As Double) As String
         For Each def In QualityDefinitions
             If def.Value = value Then
-                Return value.ToInvariantString() & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}", "")
+                Dim text = Localization.Translate(def.Text)
+                Return value.ToInvariantString() & If(Not String.IsNullOrWhiteSpace(text), $": {text}", "")
             End If
         Next
 
@@ -424,26 +429,26 @@ Public Class SvtAv1EncAppEssentialControl
         If offset = 0 Then
             Dim qualityParam = Params.Quality
             If qualityParam.Value > 0 Then
-                lv.Items.Add(New ListViewItem({"Quality", qualityParam.OptionText}))
+                lv.Items.Add(New ListViewItem({Localization.Translate("Quality"), Localization.Translate(qualityParam.OptionText)}))
             Else
                 Dim crfParam = If(Params.ConstantRateFactorLow.Visible, Params.ConstantRateFactorLow, Params.ConstantRateFactorHigh)
                 Dim quantParam = If(Params.QuantizationParameterLow.Visible, Params.QuantizationParameterLow, Params.QuantizationParameterHigh)
                 Dim paramValue = If(crfParam.Visible, crfParam.Value, quantParam.Value)
 
-                lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(paramValue)}))
+                lv.Items.Add(New ListViewItem({Localization.Translate("Quality"), GetQualityCaption(paramValue)}))
             End If
         End If
         Dim speedParam = If(Params.SpeedHigh.Visible, Params.SpeedHigh, Params.SpeedLow)
         If speedParam.Value > 0 Then
-            lv.Items.Add(New ListViewItem({"Speed", speedParam.OptionText}))
+            lv.Items.Add(New ListViewItem({Localization.Translate("Speed"), Localization.Translate(speedParam.OptionText)}))
         Else
             Dim presetParam = Params.Preset
-            lv.Items.Add(New ListViewItem({"Preset", presetParam.OptionText}))
+            lv.Items.Add(New ListViewItem({Localization.Translate("Preset"), Localization.Translate(presetParam.OptionText)}))
         End If
-        lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
-        lv.Items.Add(New ListViewItem({"Fast Decode", Params.FastDecode.OptionText}))
-        lv.Items.Add(New ListViewItem({"Lookahead", Params.Lookahead.Value.ToInvariantString() + If(Params.Lookahead.Value = Params.Lookahead.InitialValue, " (default)", "")}))
-        lv.Items.Add(New ListViewItem({"Film Grain", Params.FilmGrain.Value.ToInvariantString() + If(Params.FilmGrain.Value = Params.FilmGrain.InitialValue, " (default)", "")}))
+        lv.Items.Add(New ListViewItem({Localization.Translate("Tune"), Localization.Translate(Params.Tune.OptionText)}))
+        lv.Items.Add(New ListViewItem({Localization.Translate("Fast Decode"), Localization.Translate(Params.FastDecode.OptionText)}))
+        lv.Items.Add(New ListViewItem({Localization.Translate("Lookahead"), Params.Lookahead.Value.ToInvariantString() + If(Params.Lookahead.Value = Params.Lookahead.InitialValue, " (" + Localization.Translate("default") + ")", "")}))
+        lv.Items.Add(New ListViewItem({Localization.Translate("Film Grain"), Params.FilmGrain.Value.ToInvariantString() + If(Params.FilmGrain.Value = Params.FilmGrain.InitialValue, " (" + Localization.Translate("default") + ")", "")}))
 
         tblOverrideName.State = Encoder.OverridesTargetFileName
         blCompCheck.Visible = Params.RateControlMode.Value <> SvtAv1EncAppRateMode.Quality

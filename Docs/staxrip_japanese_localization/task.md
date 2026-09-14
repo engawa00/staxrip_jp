@@ -43,3 +43,25 @@ StaxRip の多言語対応（言語切り替え機能）および網羅的な日
   - [x] 複数オプション（CRF 23 fast, CRF 28 veryfast resize 640x360, 2pass 500k, Tune film / Profile high）での動画エンコード検証（All Passed）
   - [x] テスト生成動画ファイルのクリーンアップ（動画全削除）の検証確認
   - [x] ドキュメント更新（`task.md`, `implementation_plan.md`, `walkthrough.md`, `handover.md`）
+
+- [x] **フェーズ 7: ハードウェアエンコーダー（NVEnc, QSVEnc, VCEEnc）および SVT-AV1 詳細設定・UI の日本語辞書拡充**
+  - [x] 各種タブ名・カテゴリ（VPP, Colorspace, HDR2SDR, Ngx-TrueHDR, Deband, LibPlacebo, Tonemapping, Sharpness, GOP size/type, AV1 Specific 等）の辞書登録
+  - [x] 各種エンコーダー詳細パラメータ名（約500項目）およびヘルプ/ヒントの日本語訳辞書登録
+  - [x] ドロップダウン選択肢（モード、プリセット、チューン、プロファイル、レート制御、アルゴリズム等）の日本語訳辞書登録
+  - [x] エンコーダーコントロール（`NVEncControl.vb`, `SvtAv1EncAppControl.vb` 等）のメイン画面表示項目およびボタンテキストのローカライズ適用
+
+- [x] **フェーズ 8: AviSynth+ / VapourSynth フィルター関連 UI・プロンプトの日本語化と辞書拡充**
+  - [x] フィルターメニュー（`FiltersListView.vb`）の各項目および説明テキストのローカライズ
+  - [x] フィルターカテゴリ名（Source, Color, Field, Frame, Denoise, Sharpen, Resize, Misc, Subtitles 等）の辞書登録
+  - [x] フィルター追加時の対話ダイアログ（`Macro.vb` の `ExpandGUI` における `$enter_text:` 入力プロンプトおよび `$select:` のダイアログタイトル・選択肢）への `Localization.Translate` 適用
+  - [x] フィルター対話プロンプト（`Is the Input using TV Range?`, `Select Input Color Matrix` 等）の日本語訳辞書登録
+
+- [x] **フェーズ 9: 外部辞書ファイル（`ja.json`）の拡充・同期**
+  - [x] 内蔵デフォルト辞書と外部辞書（`Source/Settings/Languages/ja.json`）の同期・更新
+
+- [x] **フェーズ 10: ビルド検証・完全ヘッドレステスト**
+  - [x] MSBuild によるビルド検証（0警告 0エラー）
+  - [x] ヘッドレス自動テスト（`run_headless_tests.ps1` を拡張・実行して辞書引き・エンコード・クリーンアップを検証、全パス）
+
+- [x] **フェーズ 11: ドキュメント更新（walkthrough.md, handover.md 等）**
+

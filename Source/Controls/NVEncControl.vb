@@ -1,4 +1,4 @@
-﻿
+
 Imports System.Security.Cryptography
 Imports System.Web.UI.WebControls.WebParts
 Imports StaxRip.UI
@@ -211,6 +211,10 @@ Public Class NVEncControl
         blConfigContainer.Left = Width - blConfigContainer.Width - horizontalOffset
         blConfigContainer.Top = Height - blConfigContainer.Height - verticalOffset
 
+        blConfigCodec.Text = Localization.Translate("Options")
+        blConfigContainer.Text = Localization.Translate("Container Options")
+        blCompCheck.Text = Localization.Translate("Run Compressibility Check")
+
         Dim right = blConfigContainer.Left - blConfigCodec.Left
         Dim left = blConfigCodec.Left + blConfigCodec.Width + blConfigCodec.Left
         Dim adjustedText = "Target Name Override"
@@ -221,7 +225,7 @@ Public Class NVEncControl
             adjustedText = "Name Override"
         End If
 
-        tblOverrideName.Text = adjustedText
+        tblOverrideName.Text = Localization.Translate(adjustedText)
         tblOverrideName.Left = (right - left - tblOverrideName.Width) \ 2 + left
         tblOverrideName.Top = Height - tblOverrideName.Height - verticalOffset
     End Sub
@@ -253,46 +257,46 @@ Public Class NVEncControl
                     If Params.VbrQuality.Visible Then param = Params.VbrQuality
                     If param IsNot Nothing Then
                         For Each def In QualityDefinitions
-                            Dim p = def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}", "")
-                            add(p, Sub() SetQuality(selectedIndex, def.Value), param.Value = def.Value, def.Tooltip)
+                            Dim p = def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $": {Localization.Translate(def.Text)}", "")
+                            add(p, Sub() SetQuality(selectedIndex, def.Value), param.Value = def.Value, Localization.Translate(def.Tooltip))
                         Next
                     End If
                 Case 1 - offset
                     Dim param = Params.Mode
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        add(param.Options(temp), Sub() SetMode(selectedIndex, temp), param.Value = temp, "")
+                        add(Localization.Translate(param.Options(temp)), Sub() SetMode(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 2 - offset
                     Dim param = Params.Preset
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        add(param.Options(temp), Sub() SetPreset(selectedIndex, temp), param.Value = temp, "")
+                        add(Localization.Translate(param.Options(temp)), Sub() SetPreset(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 3 - offset
                     Dim param = Params.Tune
                     If Params.TuneH264.Visible Then param = Params.TuneH264
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        add(param.Options(temp), Sub() SetTune(selectedIndex, temp), param.Value = temp, "")
+                        add(Localization.Translate(param.Options(temp)), Sub() SetTune(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 4 - offset
                     Dim param = Params.OutputDepth
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        add(param.Options(temp), Sub() SetOutputDepth(selectedIndex, temp), param.Value = temp, "")
+                        add(Localization.Translate(param.Options(temp)), Sub() SetOutputDepth(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 5 - offset
                     Dim param = If(Params.DolbyVisionProfileAV1.Visible, Params.DolbyVisionProfileAV1, Params.DolbyVisionProfileH265)
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        add(param.Options(temp), Sub() SetDolbyVisionProfile(param, selectedIndex, temp), param.Value = temp, "")
+                        add(Localization.Translate(param.Options(temp)), Sub() SetDolbyVisionProfile(param, selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 6 - offset
                     Dim param = Params.ColorRange
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        add(param.Options(temp), Sub() SetColorRange(selectedIndex, temp), param.Value = temp, "")
+                        add(Localization.Translate(param.Options(temp)), Sub() SetColorRange(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case Else
                     Throw New NotSupportedException(NameOf(selectedIndex))
@@ -396,17 +400,17 @@ Public Class NVEncControl
             val = If(Params.QPAV1.Visible, Params.QPAV1.Value, val)
             val = If(Params.VbrQuality.Visible, Params.VbrQuality.Value, val)
             If val >= 0 Then
-                lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(val)}))
+                lv.Items.Add(New ListViewItem({Localization.Translate("Quality"), GetQualityCaption(val)}))
             End If
         End If
-        lv.Items.Add(New ListViewItem({"Mode", Params.Mode.OptionText}))
-        lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
+        lv.Items.Add(New ListViewItem({Localization.Translate("Mode"), Localization.Translate(Params.Mode.OptionText)}))
+        lv.Items.Add(New ListViewItem({Localization.Translate("Preset"), Localization.Translate(Params.Preset.OptionText)}))
         Dim tuneParam = Params.Tune
         If Params.TuneH264.Visible Then tuneParam = Params.TuneH264
-        lv.Items.Add(New ListViewItem({"Tune", tuneParam.OptionText}))
-        lv.Items.Add(New ListViewItem({"Output Depth", Params.OutputDepth.OptionText}))
-        lv.Items.Add(New ListViewItem({"DV Profile", If(Params.DolbyVisionProfileAV1.Visible, Params.DolbyVisionProfileAV1.OptionText, Params.DolbyVisionProfileH265.OptionText)}))
-        lv.Items.Add(New ListViewItem({"Color Range", Params.ColorRange.OptionText}))
+        lv.Items.Add(New ListViewItem({Localization.Translate("Tune"), Localization.Translate(tuneParam.OptionText)}))
+        lv.Items.Add(New ListViewItem({Localization.Translate("Output Depth"), Localization.Translate(Params.OutputDepth.OptionText)}))
+        lv.Items.Add(New ListViewItem({Localization.Translate("DV Profile"), Localization.Translate(If(Params.DolbyVisionProfileAV1.Visible, Params.DolbyVisionProfileAV1.OptionText, Params.DolbyVisionProfileH265.OptionText))}))
+        lv.Items.Add(New ListViewItem({Localization.Translate("Color Range"), Localization.Translate(Params.ColorRange.OptionText)}))
 
         tblOverrideName.State = Encoder.OverridesTargetFileName
         'blCompCheck.Visible = Not Encoder.QualityMode AndAlso Params.Decoder.Value = 0
@@ -418,7 +422,8 @@ Public Class NVEncControl
     Function GetQualityCaption(value As Double) As String
         For Each def In QualityDefinitions
             If def.Value = value Then
-                Return value.ToInvariantString() & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}", "")
+                Dim text = Localization.Translate(def.Text)
+                Return value.ToInvariantString() & If(Not String.IsNullOrWhiteSpace(text), $": {text}", "")
             End If
         Next
 

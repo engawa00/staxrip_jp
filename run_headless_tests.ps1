@@ -1,4 +1,4 @@
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+﻿[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $ErrorActionPreference = "Stop"
 
 Write-Host "=====================================================" -ForegroundColor Cyan
@@ -10,7 +10,8 @@ if (-not (Test-Path $testDir)) {
     New-Item -ItemType Directory -Path $testDir -Force | Out-Null
 }
 
-$ffmpegExe = (Get-Command ffmpeg -ErrorAction SilentlyContinue)?.Source
+$ffmpegCmd = Get-Command ffmpeg -ErrorAction SilentlyContinue
+$ffmpegExe = if ($ffmpegCmd) { $ffmpegCmd.Source } else { $null }
 if (-not $ffmpegExe -or -not (Test-Path $ffmpegExe)) {
     $candidates = @(
         (Join-Path $env:LOCALAPPDATA "Python\pythoncore-3.14-64\Scripts\ffmpeg.exe"),
@@ -40,6 +41,7 @@ try {
     [StaxRip.Localization]::set_CurrentLanguage("ja")
     
     $checks = @(
+        # 基本メニュー・UI
         @{ Key = "File"; Expected = "ファイル" },
         @{ Key = "Open Video Source File(s)..."; Expected = "動画ソースファイルを開く..." },
         @{ Key = "Quality"; Expected = "品質" },
@@ -48,7 +50,64 @@ try {
         @{ Key = "Assistant"; Expected = "アシスタント" },
         @{ Key = "Output File Type:"; Expected = "出力ファイル形式:" },
         @{ Key = "Bitrate:"; Expected = "ビットレート:" },
-        @{ Key = "Language (requires restart):"; Expected = "表示言語 (要再起動):" }
+        @{ Key = "Language (requires restart):"; Expected = "表示言語 (要再起動):" },
+
+        # エンコーダー: タブ名・カテゴリ
+        @{ Key = "Slice Decision"; Expected = "スライス判定" },
+        @{ Key = "Motion Search"; Expected = "動き探索" },
+        @{ Key = "GOP size/type"; Expected = "GOP構造・サイズ" },
+        @{ Key = "AV1 Specific 1"; Expected = "AV1固有設定 1" },
+        @{ Key = "Color Description"; Expected = "色情報記述" },
+        @{ Key = "Variance Boost Options"; Expected = "分散ブースト設定" },
+        @{ Key = "Ngx-TrueHDR"; Expected = "Ngx-TrueHDR" },
+        @{ Key = "Deband"; Expected = "バンディング低減 (Deband)" },
+        @{ Key = "LibPlacebo"; Expected = "LibPlacebo" },
+        @{ Key = "Tonemapping"; Expected = "トーンマッピング" },
+        @{ Key = "Sharpness"; Expected = "鮮鋭化 (シャープ)" },
+
+        # エンコーダー: パラメータ名
+        @{ Key = "Decoder"; Expected = "デコーダー" },
+        @{ Key = "Target Bitrate"; Expected = "目標ビットレート" },
+        @{ Key = "VBV Buffer Size"; Expected = "VBVバッファサイズ" },
+        @{ Key = "Constrained Quality"; Expected = "制限付き品質 (CQ)" },
+        @{ Key = "Adaptive Quantization"; Expected = "適応量子化 (AQ)" },
+        @{ Key = "Dolby Vision RPU"; Expected = "Dolby Vision RPU メタデータ" },
+        @{ Key = "Dynamic Peak Detection"; Expected = "動的ピーク輝度検出" },
+        @{ Key = "Gamut Mapping"; Expected = "広色域マッピング (Gamut Mapping)" },
+        @{ Key = "Lookahead"; Expected = "先行探索フレーム数 (Lookahead)" },
+        @{ Key = "Film Grain"; Expected = "フィルムグレイン (Film Grain)" },
+        @{ Key = "Speed"; Expected = "エンコード速度" },
+        @{ Key = "Fast Decode"; Expected = "高速デコード優先 (Fast Decode)" },
+
+        # エンコーダー: 選択肢
+        @{ Key = "QVBR: Constant Quality Mode"; Expected = "QVBR: 固定品質モード" },
+        @{ Key = "NVEnc Hardware"; Expected = "NVEnc ハードウェアデコード" },
+        @{ Key = "QSVEnc (Intel)"; Expected = "QSVEnc (Intel ハードウェア)" },
+        @{ Key = "P1 (Performance)"; Expected = "P1 (最速・低負荷)" },
+        @{ Key = "P7 (Quality)"; Expected = "P7 (最高品質・高負荷)" },
+        @{ Key = "8-Bit"; Expected = "8ビット (8-Bit)" },
+        @{ Key = "10-Bit"; Expected = "10ビット (10-Bit)" },
+
+        # エンコーダー コントロール画面
+        @{ Key = "Target Name Override"; Expected = "出力ファイル名を上書き" },
+        @{ Key = "Container Options"; Expected = "コンテナ設定" },
+        @{ Key = "Run Compressibility Check"; Expected = "圧縮率チェックを実行" },
+        @{ Key = "Super high quality and file size"; Expected = "最高品質（ファイルサイズ大）" },
+
+        # フィルター: UI・メニュー
+        @{ Key = "AVS Filters"; Expected = "AviSynth フィルター" },
+        @{ Key = "VS Filters"; Expected = "VapourSynth フィルター" },
+        @{ Key = "Replace"; Expected = "置換" },
+        @{ Key = "Insert"; Expected = "挿入" },
+        @{ Key = "Edit Code..."; Expected = "コードを編集..." },
+        @{ Key = "Removes the selected filter."; Expected = "選択したフィルターを削除します。" },
+
+        # フィルター: 対話プロンプト
+        @{ Key = "Please select one of the options."; Expected = "以下の選択肢から1つ選択してください。" },
+        @{ Key = "Enable Auto Gain?"; Expected = "自動ゲイン (Auto Gain) を有効にしますか？" },
+        @{ Key = "Is the Input using TV Range?"; Expected = "入力はTVレンジ (Limited 16-235) ですか？" },
+        @{ Key = "Select Input Color Matrix"; Expected = "入力カラーマトリックスを選択してください:" },
+        @{ Key = "Select the Bit Depth you want to convert to"; Expected = "変換先の色深度 (ビット数) を選択してください:" }
     )
 
     foreach ($c in $checks) {
@@ -69,6 +128,8 @@ try {
 
     # 日本語モードに戻す
     [StaxRip.Localization]::set_CurrentLanguage("ja")
+
+    $ErrorActionPreference = "Continue"
 
     # -------------------------------------------------------------
     # テスト 2: テスト用ソース動画の生成 (1秒テストパターン)

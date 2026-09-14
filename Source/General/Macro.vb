@@ -1,4 +1,4 @@
-﻿
+
 Imports System.Globalization
 Imports System.Text.RegularExpressions
 Imports Microsoft.VisualBasic
@@ -287,7 +287,7 @@ Public Class Macro
             Dim matches = Regex.Matches(ret.Value, "\$enter_text:(.+?)\$")
 
             For Each iMatch As Match In matches
-                Dim inputText = InputBox.Show(iMatch.Groups(1).Value)
+                Dim inputText = InputBox.Show(Localization.Translate(iMatch.Groups(1).Value))
 
                 If inputText = "" Then
                     ret.Cancel = True
@@ -307,17 +307,17 @@ Public Class Macro
                 If items.Count > 0 Then
                     Using td As New TaskDialog(Of String)
                         If items?(0)?.StartsWith("msg:") Then
-                            td.Title = items(0).Substring(4)
+                            td.Title = Localization.Translate(items(0).Substring(4))
                             items.RemoveAt(0)
                         Else
-                            td.Title = "Please select one of the options."
+                            td.Title = Localization.Translate("Please select one of the options.")
                         End If
 
                         For Each iItem As String In items
                             If iItem.Contains("|") Then
-                                td.AddCommand(iItem.Left("|"), iItem.Right("|"))
+                                td.AddCommand(Localization.Translate(iItem.Left("|")), iItem.Right("|"))
                             Else
-                                td.AddCommand(iItem, iItem)
+                                td.AddCommand(Localization.Translate(iItem), iItem)
                             End If
                         Next
 
